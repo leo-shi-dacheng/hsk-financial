@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { strategies, type StrategyShortId } from "@stabilitydao/stability";
+import { type StrategyShortId } from "@stabilitydao/stability";
 
 import { Breadcrumbs, HeadingText, TableColumnSort, Counter } from "@ui";
 
@@ -15,7 +15,7 @@ import { STRATEGIES_INFO, STRATEGY_STATUSES } from "../../constants";
 import type { TStrategyState, TTableColumn, TTableStrategy } from "@types";
 
 const toStrategy = (id: string): void => {
-  window.location.href = `/strategies/${id.toLowerCase()}`;
+  // window.location.href = `/strategies/${id.toLowerCase()}`;
 };
 
 const Strategies = (): JSX.Element => {
@@ -31,6 +31,21 @@ const Strategies = (): JSX.Element => {
 
     const strategyStatuses = searchParams.getAll("status");
 
+    const strategies = {
+      X:  {
+        "id": "aave",
+        "shortId": "A",
+        "state": "LIVE",
+        "contractGithubId": 252,
+        "color": "#e7c397",
+        "bgColor": "#000000",
+        "baseStrategies": [],
+        "protocols": [
+            "aave:aaveV3"
+        ],
+        "description": "Lend asset on Aave V3 based lending markets"
+      }
+    }
     if (strategies) {
       const strategiesData = Object.values(strategies).map(
         ({ id, shortId, state, contractGithubId, color, bgColor }) => ({
@@ -154,9 +169,10 @@ const Strategies = (): JSX.Element => {
 
   return (
     <div className="max-w-[1200px] w-full xl:min-w-[1200px]">
-      <Breadcrumbs links={["Platform", "Strategies"]} />
-
-      <HeadingText text="Strategies" scale={1} />
+      <div className="hidden">
+        <Breadcrumbs links={["Platform", "Strategies"]} />
+        <HeadingText text="Strategies" scale={1} />
+      </div>
 
       <div className="bg-accent-950 p-[26px] rounded-[44px] mb-6 flex flex-col select-none">
         <div className="flex flex-wrap relative justify-evenly gap-5">
@@ -206,7 +222,7 @@ const Strategies = (): JSX.Element => {
                           color={color}
                         />
                       </td>
-                      <td className="px-4 py-3 text-[16px] font-semibold">
+                      <td className="px-4 py-3 text-[16px] font-semibold flex justify-center">
                         {id}
                       </td>
                       <td className="px-4 py-3">
@@ -219,7 +235,7 @@ const Strategies = (): JSX.Element => {
                           <a
                             onClick={(event) => event.stopPropagation()}
                             className="inline-flex"
-                            href={`https://github.com/stabilitydao/stability-contracts/issues/${contractGithubId}`}
+                            href={``}
                             target="_blank"
                             title="Go to strategy issue page on Github"
                           >

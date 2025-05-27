@@ -37,12 +37,12 @@ const Header = (): JSX.Element => {
 
   return (
     <WagmiLayout>
-      <header className="font-manrope bg-accent-950 md:bg-transparent rounded-b-[16px] relative">
-        <a data-testid="stability-logo" href="/" title="Stability">
+      <header className="font-manrope bg-accent-950 md:bg-transparent rounded-b-[16px] relative px-5">
+        <a data-testid="hashkey-logo" href="/" title="hashkey">
           <img
-            className="w-[105px] h-[48px] md:w-[140px] md:h-[60px]"
-            src="/full_logo_dark.png"
-            alt="Stability logo"
+            className="w-[105px] h-[48px] md:w-[140px] md:h-[60px] ml-[15px]"
+            src="/logo.svg"
+            alt="hashkey logo"
           />
         </a>
         <div className="menu absolute left-1/2 transform -translate-x-1/2 text-[16px]">
@@ -55,24 +55,26 @@ const Header = (): JSX.Element => {
           </a>
           <a
             className={
-              currentPath === "users" || currentPath.includes("contests")
+              currentPath === "assets" || currentPath.includes("contests")
                 ? "active"
                 : ""
             }
-            href="/users"
+            href="/assets"
           >
-            Users
+            Assets
           </a>
-          <a className={currentPath === "xstbl" ? "active" : ""} href="/xstbl">
-            xSTBL
+          <a className={currentPath === "strategies" ? "active" : ""} href="/strategies">
+            Strategies
           </a>
-          <a href="https://stability.market/">Lend/Borrow</a>
-          <a className={isPlatform ? "active" : ""} href="/platform">
+          {/* <a className={currentPath === "ai" ? "active" : ""} href="/ai">
+            Lend/Borrow
+          </a> */}
+          <a className={currentPath === "platform" ? "active" : ""} href="/platform">
             Platform
           </a>
         </div>
         <div className="flex justify-end mr-[15px] gap-3">
-          {!!$account && <SonicPointsButton />}
+          {/* {!!$account && <SonicPointsButton />} */}
 
           <Wallet />
           <div className="burger-menu" onClick={() => setMenu((prev) => !prev)}>
@@ -85,27 +87,33 @@ const Header = (): JSX.Element => {
         </div>
         <nav className={`menu-nav text-center gap-3 ${menu && "active"}`}>
           <a
-            className={`px-4 py-[10px] font-semibold ${isVaults ? "bg-accent-800 rounded-[16px]" : ""}`}
+            className={`px-4 py-[10Sonic Assetspx] font-semibold ${isVaults ? "bg-accent-800 rounded-[16px]" : ""}`}
             href="/vaults"
           >
             Vaults
           </a>
           <a
-            className={`px-4 py-[10px] font-semibold ${currentPath === "users" || currentPath.includes("contests") ? "bg-accent-800 rounded-[16px]" : ""}`}
-            href="/users"
+            className={`px-4 py-[10px] font-semibold ${currentPath === "assets" || currentPath.includes("contests") ? "bg-accent-800 rounded-[16px]" : ""}`}
+            href="/assets"
           >
-            Users
+            Assets
           </a>
 
           <a
-            className={`px-4 py-[10px] font-semibold ${currentPath === "xstbl" ? "bg-accent-800 rounded-[16px]" : ""}`}
-            href="/xstbl"
+            className={`px-4 py-[10px] font-semibold ${currentPath === "strategies" ? "bg-accent-800 rounded-[16px]" : ""}`}
+            href="/strategies"
           >
-            xSTBL
+            Strategies
           </a>
-          <a href="https://stability.market/">Lend/Borrow</a>
+          {/* <a
+            className={`px-4 py-[10px] font-semibold ${currentPath === "ai" ? "bg-accent-800 rounded-[16px]" : ""}`}
+            href="/ai"
+          >
+            Lend
+          </a> */}
+          {/* <a href="https://stability.market/">Lend</a> */}
           <a
-            className={`px-4 py-[10px] font-semibold ${isPlatform ? "bg-accent-800 rounded-[16px]" : ""}`}
+            className={`px-4 py-[10px] font-semibold ${currentPath === "platform" ? "bg-accent-800 rounded-[16px]" : ""}`}
             href="/platform"
           >
             Platform

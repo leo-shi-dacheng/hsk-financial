@@ -1,4 +1,4 @@
 const AI = (): JSX.Element => {
-  return <div>AI</div>;
+  return <div>Lend/Borrow Comming Soon...</div>;
 };
 export { AI };

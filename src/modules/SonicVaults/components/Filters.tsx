@@ -157,7 +157,7 @@ const Filters: React.FC<IProps> = memo(
               setActiveStrategies("All");
             }
           }
-
+          debugger;
           setFilters(updatedFilters);
           break;
         default:
@@ -271,7 +271,7 @@ const Filters: React.FC<IProps> = memo(
                         : "hidden"
                     } `}
                   >
-                    <div className="flex flex-col items-start">
+                    {/* <div className="flex flex-col items-start">
                       {filter.variants?.map(
                         (variant: TTAbleFiltersVariant, index: number) => (
                           <div
@@ -297,7 +297,7 @@ const Filters: React.FC<IProps> = memo(
                           </div>
                         )
                       )}
-                    </div>
+                    </div> */}
                   </div>
                 </div>
               ) : (

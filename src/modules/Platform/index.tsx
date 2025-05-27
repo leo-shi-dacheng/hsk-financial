@@ -37,7 +37,7 @@ const Platform = (): JSX.Element => {
 
   const [platformData, setPlatformData] = useState([
     {
-      name: "AUM",
+      name: "HSK",
       content: "",
     },
     {
@@ -54,21 +54,21 @@ const Platform = (): JSX.Element => {
 
   const strategiesInfo = [
     { name: "Live", value: strategiesTotals.LIVE.toString(), color: "#4FAE2D" },
-    {
-      name: "Awaiting deployment",
-      value: strategiesTotals.DEPLOYMENT.toString(),
-      color: "#612FFB",
-    },
+    // {
+    //   name: "Awaiting deployment",
+    //   value: strategiesTotals.DEPLOYMENT.toString(),
+    //   color: "#612FFB",
+    // },
     {
       name: "Development",
       value: strategiesTotals.DEVELOPMENT.toString(),
       color: "#2D67FB",
     },
-    {
-      name: "Awaiting developer",
-      value: strategiesTotals.AWAITING.toString(),
-      color: "#E1E114",
-    },
+    // {
+    //   name: "Awaiting developer",
+    //   value: strategiesTotals.AWAITING.toString(),
+    //   color: "#E1E114",
+    // },
     {
       name: "Blocked",
       value: strategiesTotals.BLOCKED.toString(),
@@ -104,32 +104,6 @@ const Platform = (): JSX.Element => {
       color: "#2D67FB",
     },
   ];
-
-  const networksInfo = [
-    {
-      name: "Nodes online",
-      value: Object.keys($apiData?.network.nodes || []).filter(machingId => {
-        const nodeState = $apiData?.network.nodes[machingId] as unknown as NodeState|undefined
-        return !!(nodeState?.lastSeen && ((new Date()).getTime() / 1000) - nodeState.lastSeen < 180)
-      }).length.toString(),
-      color: "#2D67FB",
-    },
-    { name: "Seed nodes", value: seeds.length.toString(), color: "#4FAE2D" },
-  ];
-
-  const factoryInfo = [
-    {
-      name: "Available for building",
-      value: $apiData?.total.vaultForBuilding.toString() || "-",
-      color: "#2D67FB",
-    },
-    {
-      name: "Farms",
-      value: $apiData?.total.farms.toString() || "-",
-      color: "#4FAE2D",
-    },
-  ];
-
   //todo: get value from backend
   const swapperInfo = [
     {
@@ -152,54 +126,25 @@ const Platform = (): JSX.Element => {
     ) {
       setPlatformData([
         {
-          name: "AUM",
-          content: `\$${formatNumber($apiData?.total.tvl || 0, "withSpaces")}`,
+          name: "HSK",
+          content: `\$${formatNumber(0, "withSpaces")}`,
         },
         {
           name: "Users earned",
-          content: `\$${formatNumber($apiData?.total.usersEarned.toFixed(0) || 0, "withSpaces")}`,
+          content: `\$${formatNumber(0, "withSpaces")}`,
         },
-        { name: "Vaults", content: String($apiData?.total.activeVaults) },
+        { name: "Vaults", content: String(0) },
       ]);
     }
   }, [$apiData]);
 
   return (
     <div className="flex flex-col max-w-[1200px] w-full gap-[36px]">
-      <h1 className="mb-0 text-[40px] font-bold">Platform</h1>
-
-      <div className="px-6">
-        <div className="flex p-[16px] gap-[8px] bg-accent-950 rounded-[10px] w-full">
-          <svg
-            className="mt-[2px]"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M12 9V13M12 17H12.01M21.7299 18L13.7299 3.99998C13.5555 3.69218 13.3025 3.43617 12.9969 3.25805C12.6912 3.07993 12.3437 2.98608 11.9899 2.98608C11.6361 2.98608 11.2887 3.07993 10.983 3.25805C10.6773 3.43617 10.4244 3.69218 10.2499 3.99998L2.24993 18C2.07361 18.3053 1.98116 18.6519 1.98194 19.0045C1.98272 19.3571 2.07671 19.7032 2.25438 20.0078C2.43204 20.3124 2.68708 20.5646 2.99362 20.7388C3.30017 20.9131 3.64734 21.0032 3.99993 21H19.9999C20.3508 20.9996 20.6955 20.9069 20.9992 20.7313C21.303 20.5556 21.5551 20.3031 21.7304 19.9991C21.9057 19.6951 21.998 19.3504 21.9979 18.9995C21.9978 18.6486 21.9054 18.3039 21.7299 18Z"
-              stroke="#FB8B13"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          <div className="flex text-[16px] font-semibold leading-6">
-            This is an early Alpha version of the Stability platform, a minimum
-            viable product.
-            <br />
-            Only the critical scope of vault contracts has been audited.
-            <br />
-            Beta version coming in 2025.
-          </div>
-        </div>
-      </div>
+      {/* <h1 className="mb-0 text-[40px] font-bold">Platform</h1> */}
 
       <PlatformUpgrade />
 
-      <div className="flex flex-wrap justify-center p-[36px]">
+      <div className="flex flex-wrap justify-center p-[36px] px-0">
         {platformData.map(({ name, content }) => (
           <div
             key={name}
@@ -218,25 +163,12 @@ const Platform = (): JSX.Element => {
       </div>
 
       <div className="flex flex-wrap">
-        <CountersBlockCompact
+        {/* <CountersBlockCompact
           title="Network"
           link="/network"
           linkTitle="View Stability Network"
           counters={networksInfo}
-        />
-        <CountersBlockCompact
-          title="Swapper"
-          link="/swapper"
-          linkTitle="Go to Swapper"
-          counters={swapperInfo}
-        />
-        <CountersBlockCompact
-          title="Assets"
-          link="/assets"
-          linkTitle="View all assets"
-          counters={assetsInfo}
-        />
-
+        /> */}
         <CountersBlockCompact
           title="Strategies"
           link="/strategies"
@@ -244,73 +176,29 @@ const Platform = (): JSX.Element => {
           counters={strategiesInfo}
         />
 
+        {/* <CountersBlockCompact
+          title="Swapper"
+          link=""
+          linkTitle="Go to Swapper"
+          counters={swapperInfo}
+        /> */}
         <CountersBlockCompact
-          title="Chains"
-          link="/chains"
-          linkTitle="View all blockchains"
-          counters={chainsInfo}
+          title="Assets"
+          link=""
+          linkTitle="View all assets"
+          counters={assetsInfo}
         />
+
+        
 
         <CountersBlockCompact
           title="Integrations"
-          link="/integrations"
+          link=""
           linkTitle="View all organizations and protocols"
           counters={integrationInfo}
         />
-
-        <CountersBlockCompact
-          title="Factory"
-          link="/factory"
-          linkTitle="Go to Factory"
-          counters={factoryInfo}
-        />
-
       </div>
 
-      <h2 className="text-[32px] font-bold text-center mb-0">Software</h2>
-      <div className="mb-10 flex items-center gap-2">
-        <div className="flex flex-col w-full">
-          <a
-            className="hover:bg-[#141033] px-3 py-3 rounded-xl flex items-center"
-            href="https://github.com/stabilitydao/stability-contracts"
-            target="_blank"
-            title="Go to smart contracts source code on Github"
-          >
-            <img src="/github.svg" alt="GitHub" title="GitHub" />
-            <span className="ml-1">
-              💎 Stability Platform {$platformVersions[$currentChainID]}
-            </span>
-          </a>
-
-          <a
-            className="hover:bg-[#141033] px-3 py-3 rounded-xl flex items-center"
-            href="https://github.com/stabilitydao/stability"
-            target="_blank"
-            title="Go to library source code on Github"
-          >
-            <img src="/github.svg" alt="GitHub" title="GitHub" />
-            <span className="ml-1">
-              📦 Stability Integration Library{" "}
-              {packageJson.dependencies["@stabilitydao/stability"].replace(
-                "^",
-                ""
-              )}
-            </span>
-          </a>
-
-          <a
-            className="hover:bg-[#141033] px-3 py-3 rounded-xl mb-6 flex items-center w-full"
-            href="https://github.com/stabilitydao/stability-ui"
-            target="_blank"
-            title="Go to UI source code on Github"
-          >
-            <img src="/github.svg" alt="GitHub" title="GitHub" />
-            <span className="ml-1">
-              👩‍🚀 Stability User Interface {packageJson.version}
-            </span>
-          </a>
-        </div>
-      </div>
     </div>
   );
 };

@@ -16,14 +16,14 @@ const CountersBlockCompact: React.FC<IProps> = ({
   counters,
 }) => {
   return (
-    <div className="w-full md:w-1/2 lg:w-4/12 min-[1440px]:w-4/12 flex p-[24px]">
+    <div className="w-full md:w-1/2 lg:w-4/12 min-[1440px]:w-4/12 flex p-[20px]">
       <a
-        className="bg-accent-950 hover:bg-[#1B0D45] p-[26px] rounded-[44px] flex flex-col w-full"
+        className="bg-accent-950 hover:bg-[#1B0D45] p-[50px] rounded-[44px] flex flex-col w-full"
         href={link}
         title={linkTitle}
         key={link}
       >
-        <h3 className="text-[32px] font-bold text-center mb-[12px] flex items-center justify-center">
+        <h3 className="text-[24px] font-bold text-center mb-[12px] flex items-center justify-center">
           {title}
           <svg
             width="8"

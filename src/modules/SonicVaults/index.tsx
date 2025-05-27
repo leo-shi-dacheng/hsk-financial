@@ -131,14 +131,14 @@ const SonicVaults = (): JSX.Element => {
   const [tableStates, setTableStates] = useState(urlTableStates);
   const [tableFilters, setTableFilters] = useState(TABLE_FILTERS);
   const [activeNetworks, setActiveNetworks] = useState([
-    {
-      name: chains["146"].name,
-      id: "146",
-      logoURI: `https://raw.githubusercontent.com/stabilitydao/.github/main/chains/${chains["146"].img}`,
-      explorer: "https://sonicscan.org/address/",
-      nativeCurrency: "S",
-      active: true, // main page active networks
-    },
+    // {
+    //   name: chains["146"].name,
+    //   id: "146",
+    //   logoURI: `https://raw.githubusercontent.com/stabilitydao/.github/main/chains/${chains["146"].img}`,
+    //   explorer: "https://sonicscan.org/address/",
+    //   nativeCurrency: "S",
+    //   active: true, // main page active networks
+    // },
   ]);
 
   const lastTabIndex = currentTab * PAGINATION_VAULTS;
@@ -442,6 +442,8 @@ const SonicVaults = (): JSX.Element => {
 
     setActiveTableParams(_activeTableParams);
     setFilteredVaults(sortedVaults);
+    console.log(table, 'table');
+    console.log(historyData, 'table');
     setTableStates(table);
     setSearchHistory(historyData);
   };
@@ -909,11 +911,7 @@ const SonicVaults = (): JSX.Element => {
                       </td>
                     ) : (
                       <td>
-                        <p className="text-[18px]">No results found.</p>
-                        <p>
-                          Try clearing your filters or changing your search
-                          term.
-                        </p>
+                  
                       </td>
                     )}
                   </tr>

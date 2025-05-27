@@ -3,6 +3,8 @@ import { Factory } from "./Factory";
 import { Vaults } from "./Vaults";
 import { Vault } from "./Vault";
 import { AI } from "./AI";
+import { Lend } from "./Lend";
+
 import { Platform } from "./Platform";
 import { Assets } from "./Platform/components/Assets";
 import { Chains } from "./Platform/components/Chains";
@@ -26,6 +28,7 @@ export {
   Vaults,
   Vault,
   AI,
+  Lend,
   Platform,
   Assets,
   Chains,

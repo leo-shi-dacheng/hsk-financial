@@ -228,14 +228,14 @@ const Wallet = (): JSX.Element => {
           <p className="min-[1200px]:flex hidden">{currentChain?.name}</p>
         </button>
       )}
-      {isSwitchNetwork && (
+      {/* {isSwitchNetwork && (
         <button
           className="bg-button sm:py-1 px-2 rounded-md mx-2 sm:mx-4 flex items-center sm:gap-1"
-          onClick={() => switchChain({ chainId: 137 })}
+          onClick={() => switchChain({ chainId: 133 })}
         >
           <p>Switch Network</p>
         </button>
-      )}
+      )} */}
       <button
         data-testid="connectButton"
         className="bg-accent-500 h-8 md:h-10 md:px-3 md:min-w-[150px] py-1 rounded-xl flex items-center justify-center gap-1 w-8 md:w-full "

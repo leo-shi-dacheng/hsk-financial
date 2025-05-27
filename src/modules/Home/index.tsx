@@ -4,11 +4,11 @@ const Home = (): JSX.Element => {
   return (
     <div className="w-screen h-screen font-manrope font-light text-[#ECE3DA] flex flex-col home-bg">
       <div className="flex flex-col justify-between flex-1 z-[2]">
-        <header className="flex items-center justify-between h-[60px] w-full">
+        <header className="flex items-center justify-between h-[60px] w-full pl-[80px] pr-[80px]">
           <img
-            className="w-[105px] h-[48px] md:w-[140px] md:h-[60px]"
-            src="/full_logo_dark.png"
-            alt="Stability logo"
+            className="w-[105px] h-[48px] md:w-[140px] md:h-[60px] ml-[15px]"
+            src="/logo.svg"
+            alt="hashkey logo"
           />
           <a
             href="/vaults"
@@ -19,7 +19,7 @@ const Home = (): JSX.Element => {
         </header>
         <main className="mt-[20px] md:mt-0 home-main">
           <div className="min-[1130px]:min-w-[1095px] min-[1440px]:min-w-[1338px] md:px-0 px-2">
-            <a
+            {/* <a
               className="flex items-center justify-start mb-[5px] md:mb-1 ml-[3px]"
               href="https://www.soniclabs.com/"
               target="_blank"
@@ -28,16 +28,16 @@ const Home = (): JSX.Element => {
                 Powered by
               </span>
               <img
-                src="/sonic.svg"
+                src="/.svg"
                 alt="Sonic"
                 className="w-[60px] h-[27px] md:w-[80px] md:h-10"
               />
-            </a>
+            </a> */}
             <h1 className="responsive-font__h1 mb-3 leading-[100%]">
-              DeFi Infrastructure Layer
+              HashKey Financial Management 
             </h1>
             <p className="responsive-font__p opacity-60 leading-[120%] mb-[30px] md:mb-[50px] md:ml-[2px]">
-              Stability acts as permissionless, non-custodial and{" "}
+              hashkey acts as permissionless, non-custodial and{" "}
               <br className="hidden md:block" /> automatic asset management{" "}
               <br className="block md:hidden" />
               solution
@@ -52,7 +52,7 @@ const Home = (): JSX.Element => {
           </div>
         </main>
         <footer className="py-6 md:py-[3rem] px-1 flex items-center lg:items-end justify-between flex-col lg:flex-row md:responsive-font__footer! gap-5 min-[1130px]:min-w-[1095px] min-[1440px]:min-w-[1338px] home-footer">
-          <a
+          {/* <a
             className="flex items-center justify-center mb-3 md:mb-0"
             href="https://docs.soniclabs.com/funding/airdrop/sonic-boom/winners"
             target="_blank"
@@ -62,11 +62,12 @@ const Home = (): JSX.Element => {
               alt="Sonic"
               className="w-[125px] md:w-auto"
             />
-          </a>
+          </a> */}
+          <div></div>
 
           <div className="lg:hidden flex items-center justify-center gap-5">
             <a
-              href="https://github.com/stabilitydao"
+              href="https://github.com/HashkeyHSK"
               target="_blank"
               title="GitHub"
             >
@@ -75,7 +76,7 @@ const Home = (): JSX.Element => {
             <a href="https://x.com/stabilitydao" target="_blank" title="X">
               <img src="socials/x.svg" alt="X" className="w-5 h-5" />
             </a>
-            <a
+            {/* <a
               href="https://stabilitydao.gitbook.io/"
               target="_blank"
               title="GitBook"
@@ -85,8 +86,8 @@ const Home = (): JSX.Element => {
                 alt="GitBook"
                 className="w-5 h-5"
               />
-            </a>
-            <a
+            </a> */}
+            {/* <a
               href="https://defillama.com/protocol/stability"
               target="_blank"
               title="DefiLlama"
@@ -96,13 +97,13 @@ const Home = (): JSX.Element => {
                 alt="DefiLlama"
                 className="w-5 h-5"
               />
-            </a>
+            </a> */}
           </div>
 
           <div className="text-center lg:text-right text-[35px]">
-            <p className="hidden lg:block">Join Stability</p>{" "}
+            {/* <p className="hidden lg:block">Join hashkey</p>{" "}
             <p className="text-neutral-400 responsive-font__footer mt-5 md:mt-0">
-              Stability is live and already growing.
+              hashkey is live and already growing.
               <br /> Join our{" "}
               <a
                 className="text-[#C2AEFF] underline"
@@ -112,29 +113,29 @@ const Home = (): JSX.Element => {
                 community
               </a>{" "}
               to find out more.
-            </p>
+            </p> */}
             <div className="items-center justify-end lg:flex hidden mt-6">
               <a
-                href="https://github.com/stabilitydao"
+                href="https://t.me/HashKeyChainHSK"
                 target="_blank"
-                title="GitHub"
+                title="Telegram"
                 className="px-3"
               >
-                <img
-                  src="socials/github.svg"
-                  alt="GitHub"
+               <img
+                  src="socials/telegram.svg"
+                  alt="Telegram"
                   className="w-4 h-4"
                 />
               </a>
               <a
-                href="https://x.com/stabilitydao"
+                href="https://x.com/HashKeyHSK"
                 target="_blank"
                 title="X"
                 className="px-3"
               >
                 <img src="socials/x.svg" alt="X" className="w-4 h-4" />
               </a>
-              <a
+              {/* <a
                 href="https://stabilitydao.gitbook.io/"
                 target="_blank"
                 title="GitBook"
@@ -145,9 +146,9 @@ const Home = (): JSX.Element => {
                   alt="GitBook"
                   className="w-4 h-4"
                 />
-              </a>
+              </a> */}
               <a
-                href="https://defillama.com/protocol/stability"
+                href="https://defillama.com/chain/hashkey-chain"
                 target="_blank"
                 title="DefiLlama"
                 className="px-3"

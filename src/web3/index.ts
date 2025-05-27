@@ -2,7 +2,7 @@ import { defaultWagmiConfig } from "@web3modal/wagmi/react/config";
 
 import { createWalletClient, http, createPublicClient } from "viem";
 
-import { base, polygon, sonic } from "viem/chains";
+import { hashkey, hashkeyTestnet, sonic ,Chain } from "viem/chains";
 
 import { deployments } from "@stabilitydao/stability";
 
@@ -33,7 +33,6 @@ const CONTRACT_PAGINATION = 20;
 
 const walletConnectProjectId = "12a65603dc5ad4317b3bc1be13138687";
 
-// 137 || 8453 || 146
 const platforms: { [key: string]: TAddress } = Object.entries(
   deployments
 ).reduce(
@@ -87,31 +86,26 @@ const merkleDistributor = deployments[146].tokenomics.merkleDistributor;
 const SALE_CONTRACT = "0x0a02be0de3dd109b1abf4c197f0b58a3bb68ea1f";
 
 const metadata = {
-  name: "Stability",
-  description: "Stability Asset Management Platform",
-  url: "https://stability.farm",
+  name: "Hashkey",
+  description: "Hashkey Asset Management Platform",
+  url: "https://hsk.xyz",
   icons: ["https://stability.farm/logo.svg"],
 };
 
 const wagmiConfig = defaultWagmiConfig({
-  chains: [polygon, base, sonic],
+  chains: [hashkey, hashkeyTestnet, sonic] as [Chain, ...Chain[]], // Type assertion for non-empty array
   projectId: walletConnectProjectId,
   metadata,
 });
 
 const walletClient = createWalletClient({
-  chain: polygon,
+  chain: hashkey,
   transport: http(),
 });
 
-const maticClient = createPublicClient({
-  chain: polygon,
-  transport: http("https://polygon-rpc.com"),
-});
-
-const baseClient = createPublicClient({
-  chain: base,
-  transport: http("https://mainnet.base.org"),
+const hashkeyClient = createPublicClient({
+  chain: hashkey,
+  transport: http(hashkey.rpcUrls.default.http[0] || "https://api.hashkey.com/rpc/v1"),
 });
 
 const sonicClient = createPublicClient({
@@ -121,9 +115,8 @@ const sonicClient = createPublicClient({
 });
 
 const web3clients = {
-  "137": maticClient,
   "146": sonicClient,
-  "8453": baseClient,
+  [hashkey.id.toString()]: hashkeyClient,
 };
 
 export {
@@ -143,7 +136,7 @@ export {
   PlatformABI,
   StrategyABI,
   VaultABI,
-  polygon,
+  hashkey,
   wagmiConfig,
   IERC721Enumerable,
   ZapABI,
@@ -158,9 +151,7 @@ export {
   IXSTBLABI,
   sGEM1,
   merkleDistributor,
-  maticClient,
   sonicClient,
-  baseClient,
   web3clients,
   SaleABI,
   SALE_CONTRACT,
