@@ -18,4 +18,11 @@ export default defineConfig({
   integrations: [react(), tailwind()],
   output: "server",
   adapter: vercel(),
+  vite: {
+    build: {
+      rollupOptions: {
+        external: ["sharp"],
+      },
+    },
+  },
 });
