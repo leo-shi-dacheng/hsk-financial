@@ -150,11 +150,7 @@ const Platform = (): JSX.Element => {
             key={name}
             className="flex w-full sm:w-6/12 md:w-4/12 lg:w-3/12 min-[1440px]:w-4/12 h-[120px] px-[12px] rounded-full text-gray-200 items-center justify-center flex-col"
           >
-            {content ? (
-              <div className="text-[36px]">{content}</div>
-            ) : (
-              <Skeleton />
-            )}
+              <div className="text-[36px]">{content || 0}</div>
             <div className="flex self-center justify-center text-[16px]">
               {name}
             </div>
