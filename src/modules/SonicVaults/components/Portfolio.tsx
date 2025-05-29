@@ -147,17 +147,17 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                 data-testid="portfolioDeposited"
                 className="text-[18px] text-neutral-50 font-semibold"
               >
-                {$isWeb3Load ? (
+                {/* {$isWeb3Load ? (
                   <div className="mt-2">
                     <Skeleton height={21} width={100} />
                   </div>
-                ) : (
+                ) : ( */}
                   <p className={`${!$visible && "blur select-none"}`}>
                     {$visible
                       ? `$${formatNumber(portfolio.deposited, "format")}`
                       : "000$"}
                   </p>
-                )}
+                {/* )} */}
               </div>
             </div>
             <div className="max-w-[130px] w-full md:max-w-[150px]  flex flex-col items-start">
@@ -168,15 +168,15 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                 data-testid="portfolioDaily"
                 className="text-[18px] text-neutral-50 font-semibold"
               >
-                {$isWeb3Load ? (
+                {/* {$isWeb3Load ? (
                   <div className="mt-2">
                     <Skeleton height={21} width={100} />
                   </div>
-                ) : (
+                ) : ( */}
                   <p className={`${!$visible && "blur select-none"}`}>
                     {$visible ? dailyYield : "000$"}
                   </p>
-                )}
+                {/* )} */}
               </div>
             </div>
             <div className="w-[120px] md:w-[180px] flex flex-col items-start">
@@ -187,15 +187,15 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                 data-testid="portfolioMonthly"
                 className="text-[18px] text-neutral-50 font-semibold"
               >
-                {$isWeb3Load ? (
+                {/* {$isWeb3Load ? (
                   <div className="mt-2">
                     <Skeleton height={21} width={100} />
                   </div>
-                ) : (
+                ) : ( */}
                   <p className={`${!$visible && "blur select-none"}`}>
                     {$visible ? monthlyYield : "000$"}
                   </p>
-                )}
+                {/* )} */}
               </div>
             </div>
             <div className="max-w-[120px] w-full md:w-[120px] flex flex-col items-start">
@@ -206,15 +206,15 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                 data-testid="portfolioAPR"
                 className="text-[18px] text-neutral-50 font-semibold"
               >
-                {$isWeb3Load ? (
+                {/* {$isWeb3Load ? (
                   <div className="mt-2">
                     <Skeleton height={21} width={100} />
                   </div>
-                ) : (
+                ) : ( */}
                   <p className={`${!$visible && "blur select-none"}`}>
                     {$visible ? avgApr : "000$"}
                   </p>
-                )}
+                {/* )} */}
               </div>
             </div>
             <div className="max-w-[120px] w-full md:w-[120px] flex flex-col items-start">
@@ -225,15 +225,15 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                 data-testid="portfolioAPY"
                 className="text-[18px] text-neutral-50 font-semibold"
               >
-                {$isWeb3Load ? (
+                {/* {$isWeb3Load ? (
                   <div className="mt-2">
                     <Skeleton height={21} width={100} />
                   </div>
-                ) : (
+                ) : ( */}
                   <p className={`${!$visible && "blur select-none"}`}>
                     {$visible ? avgApy : "0000"}
                   </p>
-                )}
+                {/* )} */}
               </div>
             </div>
           </div>
@@ -244,17 +244,17 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                   DEPOSITED
                 </h2>
                 <div className="text-[18px] text-neutral-50 font-semibold">
-                  {$isWeb3Load ? (
+                  {/* {$isWeb3Load ? (
                     <div className="mt-1">
                       <Skeleton height={21} width={100} />
                     </div>
-                  ) : (
+                  ) : ( */}
                     <p className={`${!$visible && "blur select-none"}`}>
                       {$visible
                         ? `$${formatNumber(portfolio.deposited, "format")}`
                         : "0000"}
                     </p>
-                  )}
+                  {/* )} */}
                 </div>
               </div>
               <div className="flex flex-col items-start">
@@ -262,15 +262,15 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                   MONTHLY YIELD
                 </h2>
                 <div className="text-[18px] text-neutral-50 font-semibold">
-                  {$isWeb3Load ? (
+                  {/* {$isWeb3Load ? (
                     <div className="mt-1">
                       <Skeleton height={21} width={100} />
                     </div>
-                  ) : (
+                  ) : ( */}
                     <p className={`${!$visible && "blur select-none"}`}>
                       {$visible ? monthlyYield : "0000"}
                     </p>
-                  )}
+                  {/* )} */}
                 </div>
               </div>
               <div className="flex flex-col items-start">
@@ -278,15 +278,15 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                   AVG. APY
                 </h2>
                 <div className="text-[18px] text-neutral-50 font-semibold">
-                  {$isWeb3Load ? (
+                  {/* {$isWeb3Load ? (
                     <div className="mt-1">
                       <Skeleton height={21} width={100} />
                     </div>
-                  ) : (
+                  ) : ( */}
                     <p className={`${!$visible && "blur select-none"}`}>
                       {$visible ? avgApy : "0000"}
                     </p>
-                  )}
+                  {/* )} */}
                 </div>
               </div>
             </div>
@@ -296,15 +296,15 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                   DAILY YIELD
                 </h2>
                 <div className="text-[18px] text-neutral-50 font-semibold">
-                  {$isWeb3Load ? (
+                  {/* {$isWeb3Load ? (
                     <div className="mt-1">
                       <Skeleton height={21} width={130} />
                     </div>
-                  ) : (
+                  ) : ( */}
                     <p className={`${!$visible && "blur select-none"}`}>
                       {$visible ? dailyYield : "0000"}
                     </p>
-                  )}
+                  {/* )} */}
                 </div>
               </div>
               <div className="flex flex-col items-start">
@@ -312,15 +312,15 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                   AVG. APR
                 </h2>
                 <div className="text-[18px] text-neutral-50 font-semibold">
-                  {$isWeb3Load ? (
+                  {/* {$isWeb3Load ? (
                     <div className="mt-1">
                       <Skeleton height={21} width={130} />
                     </div>
-                  ) : (
+                  ) : ( */}
                     <p className={`${!$visible && "blur select-none"}`}>
                       {$visible ? avgApr : "0000"}
                     </p>
-                  )}
+                  {/* )} */}
                 </div>
               </div>
             </div>
