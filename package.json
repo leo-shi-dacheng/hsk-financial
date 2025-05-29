@@ -12,6 +12,9 @@
     "test:unit": "vitest",
     "test:e2e": "playwright test"
   },
+  "engines": {
+    "node": "20.x"
+  },
   "dependencies": {
     "@astrojs/partytown": "^2.1.0",
     "@astrojs/react": "^3.0.3",
