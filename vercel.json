@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/stability/:path*",
+      "destination": "https://api.stability.farm/:path*"
+    },
+    {
+      "source": "/api/stabilitydao/:path*", 
+      "destination": "https://api.stabilitydao.org/:path*"
+    }
+  ]
+}
