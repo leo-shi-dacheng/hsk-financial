@@ -16,6 +16,19 @@ import tokenlist from "./tokenlist.json";
 
 import type { TTableColumn, TAssetData } from "@types";
 
+import clsx from "clsx";
+
+// tag 颜色映射
+const TAG_COLORS: Record<string, string> = {
+  Stablecoin: "bg-blue-100 text-blue-800",
+  Bridged: "bg-green-100 text-green-800",
+  USD: "bg-yellow-100 text-yellow-800",
+  ETH: "bg-purple-100 text-purple-800",
+  // 其他tag...
+  default: "bg-gray-200 text-gray-800"
+};
+
+
 const assets = [
   {
     "addresses": {
@@ -151,7 +164,7 @@ const Assets = (): JSX.Element => {
   }, [$assetsPrices]);
 
   return (
-    <div className="max-w-[1200px] w-full xl:min-w-[1200px]">
+    <div className="max-w-[1200px] w-full xl:min-w-[1200px] px-6 py-6">
       <div className="hidden">
         <Breadcrumbs links={["Platform", "Assets"]} />
 
@@ -175,9 +188,9 @@ const Assets = (): JSX.Element => {
         </label>
       </div>
 
-      <table className="font-manrope w-full">
-        <thead className="bg-accent-950 text-neutral-600 h-[36px]">
-          <tr className="text-[12px] uppercase">
+      <table className="font-sora w-full border-separate border-spacing-y-2">
+        <thead className="bg-accent-950 text-neutral-600 h-[44px]">
+          <tr className="text-[13px] uppercase">
             {tableStates.map((value: TTableColumn, index: number) => (
               <TableColumnSort
                 key={value.name + index}
@@ -188,30 +201,40 @@ const Assets = (): JSX.Element => {
                 setTable={setTableStates}
                 tableData={filteredTableData}
                 setTableData={setFilteredTableData}
-              />
+             />
             ))}
           </tr>
         </thead>
-        <tbody className="text-[14px]">
+        <tbody className="text-[15px]">
           {!!filteredTableData.length &&
             filteredTableData.map(({ symbol, price, website, tags, img }) => (
-              <tr className="h-[48px] hover:bg-accent-950" key={symbol}>
-                <td className="pl-4 py-3 w-[260px]">
-                  <div className="flex">
-                    <img src={img} className="w-[24px] h-[24px] rounded-full mr-2" alt={symbol} />
+              <tr
+                className="h-[56px] hover:bg-accent-950 rounded-xl"
+                key={symbol}
+              >
+                <td className="pl-6 py-4 w-[260px]">
+                  <div className="flex items-center gap-3">
+                    <img src={img} className="w-[28px] h-[28px] rounded-full" alt={symbol} />
                     <span className="font-bold">{symbol}</span>
                   </div>
                 </td>
-                <td className="px-4 py-3 text-end min-w-[60px]" style={price == 0 ? {
-                  color: 'red',
-                } : {}}>
+                <td className="px-4 py-4 text-end min-w-[80px]" style={price == 0 ? { color: 'red' } : {}}>
                   <span className="mr-[10px]">${formatNumber(price, price < 1 ? "smallNumbers" : "format")}</span>
                 </td>
-                <td className="px-4 py-3">{tags?.map(tag => (
-                  <div
-                    className="inline-flex text-[12px] text-[#eeeeee] font-bold px-3 py-[1px] bg-[#26005f] rounded-2xl mx-2">{tag}</div>
-                ))}</td>
-                <td className="px-4 py-3 ">
+                <td className="px-4 py-4">
+                  {tags?.map(tag => (
+                    <span
+                      key={tag}
+                      className={clsx(
+                        "inline-block text-[13px] font-bold px-3 py-[2px] rounded-2xl mx-1",
+                        TAG_COLORS[tag] || TAG_COLORS.default
+                      )}
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                </td>
+                <td className="px-4 py-4">
                   <a
                     className="flex items-center justify-start"
                     href={website}
@@ -224,8 +247,8 @@ const Assets = (): JSX.Element => {
                       className="w-[20px] mr-1"
                     />
                     {website
-                        .replace(/^https:\/\//, '')
-                        .replace(/\/$/, '')
+                      .replace(/^https:\/\//, '')
+                      .replace(/\/$/, '')
                       || ''}
                   </a>
                 </td>

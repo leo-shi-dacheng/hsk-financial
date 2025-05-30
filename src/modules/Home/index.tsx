@@ -2,7 +2,7 @@ import "./home.css";
 
 const Home = (): JSX.Element => {
   return (
-    <div className="w-screen h-screen font-manrope font-light text-[#ECE3DA] flex flex-col home-bg">
+    <div className="w-screen h-screen font-sora font-light text-[#ECE3DA] flex flex-col home-bg">
       <div className="flex flex-col justify-between flex-1 z-[2]">
         <header className="flex items-center justify-between h-[60px] w-full pl-[80px] pr-[80px]">
           <img
@@ -19,29 +19,11 @@ const Home = (): JSX.Element => {
         </header>
         <main className="mt-[20px] md:mt-0 home-main">
           <div className="min-[1130px]:min-w-[1095px] min-[1440px]:min-w-[1338px] md:px-0 px-2">
-            {/* <a
-              className="flex items-center justify-start mb-[5px] md:mb-1 ml-[3px]"
-              href="https://www.soniclabs.com/"
-              target="_blank"
-            >
-              <span className="mr-[7px] responsive-font__sonic text-nowrap">
-                Powered by
-              </span>
-              <img
-                src="/.svg"
-                alt="Sonic"
-                className="w-[60px] h-[27px] md:w-[80px] md:h-10"
-              />
-            </a> */}
             <h1 className="responsive-font__h1 mb-3 leading-[100%]">
-              HashKey Financial Management 
+              HashKey Financial Management
             </h1>
             <p className="responsive-font__p opacity-60 leading-[120%] mb-[30px] md:mb-[50px] md:ml-[2px]">
-              hashkey acts as permissionless, non-custodial and{" "}
-              <br className="hidden md:block" /> automatic asset management{" "}
-              <br className="block md:hidden" />
-              solution
-              <br className="hidden md:block" /> based on AI.
+              Permissionless, non-custodial, and automatic asset management powered by AI.
             </p>
             <a
               className="text-white text-[15px] md:text-[20px] leading-[100%] py-[9px] md:py-[15px] px-6 md:px-[45px] bg-[#612FFB] rounded-[5px] font-medium md:ml-[2px]"

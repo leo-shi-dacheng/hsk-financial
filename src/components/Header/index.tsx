@@ -5,7 +5,6 @@ import { useStore } from "@nanostores/react";
 import { account } from "@store";
 
 import { Wallet } from "./Wallet";
-import { SonicPointsButton } from "./SonicPointsButton";
 
 import { WagmiLayout } from "@layouts";
 
@@ -74,8 +73,6 @@ const Header = (): JSX.Element => {
           </a>
         </div>
         <div className="flex justify-end mr-[15px] gap-3">
-          {/* {!!$account && <SonicPointsButton />} */}
-
           <Wallet />
           <div className="burger-menu" onClick={() => setMenu((prev) => !prev)}>
             {menu ? (

@@ -1,8 +1,6 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 import { useStore } from "@nanostores/react";
-
-import { PlatformUpgrade } from "./components/PlatformUpgrade";
 
 import {
   type ApiMainReply,
@@ -23,8 +21,18 @@ import { apiData, platformVersions } from "@store";
 
 import tokenlist from "@stabilitydao/stability/out/stability.tokenlist.json";
 
-import packageJson from "../../../package.json";
-import {NodeState} from "@stabilitydao/stability/out/api.types";
+import { CountUp } from 'countup.js';
+
+const platformIcons = [
+  <svg className="w-8 h-8 text-yellow-400" /* ... */ />, // HSK
+  <svg className="w-8 h-8 text-green-400" /* ... */ />, // Users earned
+  <svg className="w-8 h-8 text-blue-400" /* ... */ />, // Vaults
+];
+const platformBg = [
+  "bg-yellow-50",
+  "bg-green-50",
+  "bg-blue-50"
+];
 
 const Platform = (): JSX.Element => {
   const $currentChainID = "146";
@@ -118,6 +126,9 @@ const Platform = (): JSX.Element => {
     },
   ];
 
+  // 用ref存储数字动画
+  const countUpRefs = [useRef(null), useRef(null), useRef(null)];
+
   useEffect(() => {
     if (
       $apiData?.total?.tvl &&
@@ -126,32 +137,44 @@ const Platform = (): JSX.Element => {
     ) {
       setPlatformData([
         {
-          name: "HSK",
-          content: `\$${formatNumber(0, "withSpaces")}`,
+          name: "AUM",
+          content: `\$${formatNumber(69255967, "withSpaces")}`,
         },
         {
           name: "Users earned",
-          content: `\$${formatNumber(0, "withSpaces")}`,
+          content: `\$${formatNumber(354657, "withSpaces")}`,
         },
-        { name: "Vaults", content: String(0) },
+        { name: "Vaults", content: String(108) },
       ]);
     }
   }, [$apiData]);
+
+  useEffect(() => {
+    platformData.forEach((item, idx) => {
+      if (countUpRefs[idx].current) {
+        const num = Number(String(item.content).replace(/[^\d.]/g, "")) || 0;
+        new CountUp(countUpRefs[idx].current, num, { duration: 1.2 }).start();
+      }
+    });
+  }, [platformData]);
 
   return (
     <div className="flex flex-col max-w-[1200px] w-full gap-[36px]">
       {/* <h1 className="mb-0 text-[40px] font-bold">Platform</h1> */}
 
-      <PlatformUpgrade />
-
       <div className="flex flex-wrap justify-center p-[36px] px-0">
-        {platformData.map(({ name, content }) => (
+        {platformData.map(({ name, content }, idx) => (
           <div
             key={name}
             className="flex w-full sm:w-6/12 md:w-4/12 lg:w-3/12 min-[1440px]:w-4/12 h-[120px] px-[12px] rounded-full text-gray-200 items-center justify-center flex-col"
           >
-              <div className="text-[36px]">{content || 0}</div>
-            <div className="flex self-center justify-center text-[16px]">
+            <div className="mb-2">{platformIcons[idx]}</div>
+            <div
+              ref={countUpRefs[idx]}
+              className="text-[36px] font-extrabold "
+            >
+            </div>
+            <div className="flex self-center justify-center text-[16px] font-bold">
               {name}
             </div>
           </div>
