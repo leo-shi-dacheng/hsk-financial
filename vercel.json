@@ -1,12 +1,31 @@
 {
   "rewrites": [
     {
-      "source": "/api/stability/:path*",
-      "destination": "https://api.stability.farm/:path*"
+      "source": "/api/stability/(.*)",
+      "destination": "/api/stability/$1"
     },
     {
-      "source": "/api/stabilitydao/:path*", 
-      "destination": "https://api.stabilitydao.org/:path*"
+      "source": "/api/stabilitydao/(.*)", 
+      "destination": "/api/stabilitydao/$1"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/api/(.*)",
+      "headers": [
+        {
+          "key": "Access-Control-Allow-Origin",
+          "value": "*"
+        },
+        {
+          "key": "Access-Control-Allow-Methods",
+          "value": "GET, POST, PUT, DELETE, OPTIONS"
+        },
+        {
+          "key": "Access-Control-Allow-Headers",
+          "value": "Content-Type, Authorization"
+        }
+      ]
     }
   ]
 }

@@ -23,6 +23,20 @@ export default defineConfig({
     }
   }),
   vite: {
+    server: {
+      proxy: {
+        '/api/stability': {
+          target: 'https://api.stability.farm',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/stability/, '')
+        },
+        '/api/stabilitydao': {
+          target: 'https://api.stabilitydao.org',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/stabilitydao/, '')
+        }
+      }
+    },
     build: {
       rollupOptions: {
         external: ["sharp"],
