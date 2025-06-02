@@ -33,6 +33,7 @@
     "add": "^2.0.6",
     "astro": "^3.4.3",
     "axios": "^1.6.2",
+    "clsx": "^2.1.1",
     "countup.js": "^2.8.2",
     "eslint-plugin-astro": "^1.2.3",
     "http-proxy-middleware": "^2.0.6",
