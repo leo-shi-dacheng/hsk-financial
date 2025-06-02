@@ -7,7 +7,6 @@ import { isMobile } from "react-device-detect";
 
 import { useWeb3Modal } from "@web3modal/wagmi/react";
 
-import { deployments } from "@stabilitydao/stability";
 
 import {
   account,
@@ -206,11 +205,6 @@ const Wallet = (): JSX.Element => {
   useEffect(() => {
     localStorage.removeItem("@w3m/connected_wallet_image_url");
   }, []);
-
-  const isSwitchNetwork = useMemo(
-    () => chain && !Object.keys(deployments).map(Number).includes(chain?.id),
-    []
-  );
 
   return (
     <div className="flex gap-3 flex-nowrap justify-end whitespace-nowrap text-neutral-50 text-[16px] font-semibold">

@@ -17,7 +17,6 @@ import { Strategies } from "./Platform/components/Strategies";
 import { Strategy } from "./Platform/components/Strategies/Strategy";
 import { News } from "./Platform/components/News";
 import { NewsDetail } from "./Platform/components/News/NewsDetail";
-import { Swapper } from "./Platform/components/Swapper";
 import { Users } from "./Users";
 import { Contests } from "./Contests";
 import { Contest } from "./Contests/Contest";
@@ -50,5 +49,4 @@ export {
   SonicVaults,
   STBL,
   XSTBL,
-  Swapper,
 };

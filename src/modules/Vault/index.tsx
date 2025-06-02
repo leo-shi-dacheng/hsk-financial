@@ -6,7 +6,6 @@ import { InvestForm } from "./components/InvestForm";
 import { Strategy } from "./components/Strategy";
 import { Assets } from "./components/Assets";
 import { InfoBar } from "./components/InfoBar";
-import { HistoricalRate } from "./components/HistoricalRate";
 import { VaultInfo } from "./components/VaultInfo";
 import { Contracts } from "./components/Contracts";
 import { YieldRates } from "./components/YieldRates";
@@ -66,13 +65,13 @@ const Vault: React.FC<IProps> = ({ network, vault }) => {
           <InvestForm network={network} vault={localVault} />
         </div>
 
-        <HistoricalRate
+        {/* <HistoricalRate
           network={network}
           address={vault.toLowerCase() as TAddress}
           created={Number(localVault.created)}
           vaultStrategy={localVault.strategy}
           lastHardWork={Number(localVault.lastHardWork)}
-        />
+        /> */}
 
         <div className="my-8 flex flex-col lg:flex-row items-start justify-start gap-5 w-full">
           <div className="w-full lg:w-1/2">

@@ -44,13 +44,13 @@ const Platform = (): JSX.Element => {
   const [platformData, setPlatformData] = useState([
     {
       name: "HSK",
-      content: "",
+      content: `\$${formatNumber(69255967, "withSpaces")}`,
     },
     {
       name: "Users earned",
-      content: "",
+      content: `\$${formatNumber(354657, "withSpaces")}`,
     },
-    { name: "Vaults", content: "" },
+    { name: "Vaults", content: String(108) },
   ]);
   let protocolsTotal = 0;
   for (const defiOrgCode of Object.keys(integrations)) {
