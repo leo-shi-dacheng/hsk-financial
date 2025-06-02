@@ -1,0 +1,31 @@
+---
+import Layout from '@layouts/Layout.astro';
+import { NewsDetail } from "@modules";
+const { newsId } = Astro.params as {newsId: string};
+---
+
+<Layout
+  title="News Detail"
+  img="/ogs/news-detail.png"
+  metaTitle="News Detail - Web3 and blockchain news article"
+  metaUrl={`https://stability.farm/news/${newsId}`}
+  metaDescription="Read the latest Web3, DeFi, and blockchain news article with detailed analysis and insights."
+>
+    <div class="news-detail-page max-w-[1200px]">
+        <NewsDetail newsId={newsId} client:only="react" />
+    </div>
+</Layout>
+
+<style>
+  .news-detail-page {
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    margin: 0 auto;
+  }
+  
+  @media (max-width: 768px) {
+    .news-detail-page {
+      padding: 1rem 0.5rem;
+    }
+  }
+</style> 

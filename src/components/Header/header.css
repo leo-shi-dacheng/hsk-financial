@@ -14,6 +14,13 @@ body.no-scroll {
   display: none;
 }
 
+/* 市场数据条响应式 */
+@media screen and (max-width: 1024px) {
+  .market-data-container {
+    display: none !important;
+  }
+}
+
 @media screen and (max-width: 1080px) {
   .burger-menu {
     display: flex;

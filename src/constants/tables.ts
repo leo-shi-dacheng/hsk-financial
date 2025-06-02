@@ -137,6 +137,12 @@ const ASSETS_TABLE: TTableColumn[] = [
     dataType: "number",
   },
   {
+    name: "Market Cap",
+    keyName: "marketCap",
+    sortType: "none",
+    dataType: "number",
+  },
+  {
     name: "Tags",
     keyName: "",
     sortType: "none",

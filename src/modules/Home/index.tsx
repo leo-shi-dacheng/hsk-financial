@@ -1,9 +1,13 @@
 import "./home.css";
+import { FloatingTokens } from "../../components";
 
 const Home = (): JSX.Element => {
   return (
-    <div className="w-screen h-screen font-sora font-light text-[#ECE3DA] flex flex-col home-bg">
-      <div className="flex flex-col justify-between flex-1 z-[2]">
+    <div className="w-screen h-screen font-sora font-light text-[#ECE3DA] flex flex-col home-bg relative">
+      {/* 浮动代币背景 */}
+      <FloatingTokens />
+      
+      <div className="flex flex-col justify-between flex-1 z-[2] relative">
         <header className="flex items-center justify-between h-[60px] w-full pl-[80px] pr-[80px]">
           <img
             className="w-[105px] h-[48px] md:w-[140px] md:h-[60px] ml-[15px]"
@@ -18,7 +22,7 @@ const Home = (): JSX.Element => {
           </a>
         </header>
         <main className="mt-[20px] md:mt-0 home-main">
-          <div className="min-[1130px]:min-w-[1095px] min-[1440px]:min-w-[1338px] md:px-0 px-2">
+          <div className="min-[1130px]:min-w-[1095px] min-[1440px]:min-w-[1338px] md:px-0 px-2 flex flex-col items-center">
             <h1 className="responsive-font__h1 mb-3 leading-[100%]">
               HashKey Financial Management
             </h1>

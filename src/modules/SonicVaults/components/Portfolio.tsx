@@ -6,13 +6,13 @@ import { formatUnits } from "viem";
 import { PlatformModal } from "./modals/PlatformModal";
 
 import {
-  Skeleton,
   APRtimeSwitcher,
   FeeAPRModal,
   BalanceVisibilityToggler,
+  CountUp,
 } from "@ui";
 
-import { connected, visible, isWeb3Load, aprFilter } from "@store";
+import { connected, visible, aprFilter } from "@store";
 
 import { formatNumber, calculateAPY } from "@utils";
 
@@ -25,7 +25,6 @@ interface IProps {
 const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
   const $connected = useStore(connected);
   const $visible = useStore(visible);
-  const $isWeb3Load = useStore(isWeb3Load);
   const $aprFilter = useStore(aprFilter);
 
   const [feeAPRModal, setFeeAPRModal] = useState(false);
@@ -43,7 +42,13 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
   });
 
   const initPortfolio = () => {
-    if (!$connected) {
+    // 检查是否有 mock 数据（有 balance 的 vault）
+    const hasBalanceData = vaults.some(v => v.balance && Number(v.balance) > 0);
+    
+    // 如果有 mock 数据或已连接，则显示数据
+    const shouldShowData = $connected || hasBalanceData;
+    
+    if (!shouldShowData) {
       const totalTvl = vaults.reduce((accumulator, v) => {
         return accumulator + (v.tvl ? Number(v.tvl) : 0);
       }, 0);
@@ -68,7 +73,6 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
     vaults.forEach((v) => {
       if (v.balance) {
         let apr = Number(v?.earningData?.apr?.[$aprFilter]);
-
         let vaultBalance = Number(formatUnits(BigInt(v.balance), 18));
         let vaultSharePrice = Number(v.shareprice);
         apr = Number(apr);
@@ -99,25 +103,6 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
     });
   };
 
-  const dailyYield = $connected
-    ? `$${formatNumber(portfolio.dailySum, "format")} / ${formatNumber(
-        portfolio.dailyPercent,
-        "format"
-      )}%`
-    : "-";
-  const monthlyYield = $connected
-    ? `$${formatNumber(portfolio.monthly, "format")} / ${formatNumber(
-        portfolio.monthPercent,
-        "format"
-      )}%`
-    : "-";
-  const avgApr = $connected
-    ? `${formatNumber(portfolio.apr, "formatAPR")}%`
-    : "-";
-  const avgApy = $connected
-    ? `${formatNumber(portfolio.apy, "formatAPR")}%`
-    : "-";
-
   useEffect(() => {
     localStorage.setItem("APRsFiler", JSON.stringify($aprFilter));
     if (vaults) {
@@ -147,17 +132,21 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                 data-testid="portfolioDeposited"
                 className="text-[18px] text-neutral-50 font-semibold"
               >
-                {/* {$isWeb3Load ? (
-                  <div className="mt-2">
-                    <Skeleton height={21} width={100} />
-                  </div>
-                ) : ( */}
-                  <p className={`${!$visible && "blur select-none"}`}>
-                    {$visible
-                      ? `$${formatNumber(portfolio.deposited, "format")}`
-                      : "000$"}
-                  </p>
-                {/* )} */}
+                <p className={`${!$visible && "blur select-none"}`}>
+                  {$visible ? (
+                    <>
+                      $<CountUp 
+                        end={Number(portfolio.deposited)} 
+                        decimals={2}
+                        duration={1.5}
+                        enableScrollSpy={true}
+                        separator=","
+                      />
+                    </>
+                  ) : (
+                    "000$"
+                  )}
+                </p>
               </div>
             </div>
             <div className="max-w-[130px] w-full md:max-w-[150px]  flex flex-col items-start">
@@ -168,15 +157,27 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                 data-testid="portfolioDaily"
                 className="text-[18px] text-neutral-50 font-semibold"
               >
-                {/* {$isWeb3Load ? (
-                  <div className="mt-2">
-                    <Skeleton height={21} width={100} />
-                  </div>
-                ) : ( */}
-                  <p className={`${!$visible && "blur select-none"}`}>
-                    {$visible ? dailyYield : "000$"}
-                  </p>
-                {/* )} */}
+                <p className={`${!$visible && "blur select-none"}`}>
+                  {$visible ? (
+                    <>
+                      $<CountUp 
+                        end={Number(portfolio.dailySum)} 
+                        decimals={2}
+                        duration={1.5}
+                        enableScrollSpy={true}
+                        separator=","
+                      /> / <CountUp 
+                        end={Number(portfolio.dailyPercent)} 
+                        decimals={3}
+                        duration={1.5}
+                        enableScrollSpy={true}
+                        suffix="%"
+                      />
+                    </>
+                  ) : (
+                    "000$"
+                  )}
+                </p>
               </div>
             </div>
             <div className="w-[120px] md:w-[180px] flex flex-col items-start">
@@ -187,15 +188,27 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                 data-testid="portfolioMonthly"
                 className="text-[18px] text-neutral-50 font-semibold"
               >
-                {/* {$isWeb3Load ? (
-                  <div className="mt-2">
-                    <Skeleton height={21} width={100} />
-                  </div>
-                ) : ( */}
-                  <p className={`${!$visible && "blur select-none"}`}>
-                    {$visible ? monthlyYield : "000$"}
-                  </p>
-                {/* )} */}
+                <p className={`${!$visible && "blur select-none"}`}>
+                  {$visible ? (
+                    <>
+                      $<CountUp 
+                        end={Number(portfolio.monthly)} 
+                        decimals={2}
+                        duration={1.5}
+                        enableScrollSpy={true}
+                        separator=","
+                      /> / <CountUp 
+                        end={Number(portfolio.monthPercent)} 
+                        decimals={3}
+                        duration={1.5}
+                        enableScrollSpy={true}
+                        suffix="%"
+                      />
+                    </>
+                  ) : (
+                    "000$"
+                  )}
+                </p>
               </div>
             </div>
             <div className="max-w-[120px] w-full md:w-[120px] flex flex-col items-start">
@@ -206,15 +219,19 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                 data-testid="portfolioAPR"
                 className="text-[18px] text-neutral-50 font-semibold"
               >
-                {/* {$isWeb3Load ? (
-                  <div className="mt-2">
-                    <Skeleton height={21} width={100} />
-                  </div>
-                ) : ( */}
-                  <p className={`${!$visible && "blur select-none"}`}>
-                    {$visible ? avgApr : "000$"}
-                  </p>
-                {/* )} */}
+                <p className={`${!$visible && "blur select-none"}`}>
+                  {$visible ? (
+                    <CountUp 
+                      end={Number(portfolio.apr)} 
+                      decimals={2}
+                      duration={1.5}
+                      enableScrollSpy={true}
+                      suffix="%"
+                    />
+                  ) : (
+                    "000$"
+                  )}
+                </p>
               </div>
             </div>
             <div className="max-w-[120px] w-full md:w-[120px] flex flex-col items-start">
@@ -225,15 +242,19 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                 data-testid="portfolioAPY"
                 className="text-[18px] text-neutral-50 font-semibold"
               >
-                {/* {$isWeb3Load ? (
-                  <div className="mt-2">
-                    <Skeleton height={21} width={100} />
-                  </div>
-                ) : ( */}
-                  <p className={`${!$visible && "blur select-none"}`}>
-                    {$visible ? avgApy : "0000"}
-                  </p>
-                {/* )} */}
+                <p className={`${!$visible && "blur select-none"}`}>
+                  {$visible ? (
+                    <CountUp 
+                      end={Number(portfolio.apy)} 
+                      decimals={2}
+                      duration={1.5}
+                      enableScrollSpy={true}
+                      suffix="%"
+                    />
+                  ) : (
+                    "0000"
+                  )}
+                </p>
               </div>
             </div>
           </div>
@@ -244,17 +265,21 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                   DEPOSITED
                 </h2>
                 <div className="text-[18px] text-neutral-50 font-semibold">
-                  {/* {$isWeb3Load ? (
-                    <div className="mt-1">
-                      <Skeleton height={21} width={100} />
-                    </div>
-                  ) : ( */}
-                    <p className={`${!$visible && "blur select-none"}`}>
-                      {$visible
-                        ? `$${formatNumber(portfolio.deposited, "format")}`
-                        : "0000"}
-                    </p>
-                  {/* )} */}
+                  <p className={`${!$visible && "blur select-none"}`}>
+                    {$visible ? (
+                      <>
+                        $<CountUp 
+                          end={Number(portfolio.deposited)} 
+                          decimals={2}
+                          duration={1.5}
+                          enableScrollSpy={true}
+                          separator=","
+                        />
+                      </>
+                    ) : (
+                      "0000"
+                    )}
+                  </p>
                 </div>
               </div>
               <div className="flex flex-col items-start">
@@ -262,15 +287,27 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                   MONTHLY YIELD
                 </h2>
                 <div className="text-[18px] text-neutral-50 font-semibold">
-                  {/* {$isWeb3Load ? (
-                    <div className="mt-1">
-                      <Skeleton height={21} width={100} />
-                    </div>
-                  ) : ( */}
-                    <p className={`${!$visible && "blur select-none"}`}>
-                      {$visible ? monthlyYield : "0000"}
-                    </p>
-                  {/* )} */}
+                  <p className={`${!$visible && "blur select-none"}`}>
+                    {$visible ? (
+                      <>
+                        $<CountUp 
+                          end={Number(portfolio.monthly)} 
+                          decimals={2}
+                          duration={1.5}
+                          enableScrollSpy={true}
+                          separator=","
+                        /> / <CountUp 
+                          end={Number(portfolio.monthPercent)} 
+                          decimals={3}
+                          duration={1.5}
+                          enableScrollSpy={true}
+                          suffix="%"
+                        />
+                      </>
+                    ) : (
+                      "0000"
+                    )}
+                  </p>
                 </div>
               </div>
               <div className="flex flex-col items-start">
@@ -278,15 +315,19 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                   AVG. APY
                 </h2>
                 <div className="text-[18px] text-neutral-50 font-semibold">
-                  {/* {$isWeb3Load ? (
-                    <div className="mt-1">
-                      <Skeleton height={21} width={100} />
-                    </div>
-                  ) : ( */}
-                    <p className={`${!$visible && "blur select-none"}`}>
-                      {$visible ? avgApy : "0000"}
-                    </p>
-                  {/* )} */}
+                  <p className={`${!$visible && "blur select-none"}`}>
+                    {$visible ? (
+                      <CountUp 
+                        end={Number(portfolio.apy)} 
+                        decimals={2}
+                        duration={1.5}
+                        enableScrollSpy={true}
+                        suffix="%"
+                      />
+                    ) : (
+                      "0000"
+                    )}
+                  </p>
                 </div>
               </div>
             </div>
@@ -296,15 +337,27 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                   DAILY YIELD
                 </h2>
                 <div className="text-[18px] text-neutral-50 font-semibold">
-                  {/* {$isWeb3Load ? (
-                    <div className="mt-1">
-                      <Skeleton height={21} width={130} />
-                    </div>
-                  ) : ( */}
-                    <p className={`${!$visible && "blur select-none"}`}>
-                      {$visible ? dailyYield : "0000"}
-                    </p>
-                  {/* )} */}
+                  <p className={`${!$visible && "blur select-none"}`}>
+                    {$visible ? (
+                      <>
+                        $<CountUp 
+                          end={Number(portfolio.dailySum)} 
+                          decimals={2}
+                          duration={1.5}
+                          enableScrollSpy={true}
+                          separator=","
+                        /> / <CountUp 
+                          end={Number(portfolio.dailyPercent)} 
+                          decimals={3}
+                          duration={1.5}
+                          enableScrollSpy={true}
+                          suffix="%"
+                        />
+                      </>
+                    ) : (
+                      "0000"
+                    )}
+                  </p>
                 </div>
               </div>
               <div className="flex flex-col items-start">
@@ -312,15 +365,19 @@ const Portfolio: React.FC<IProps> = memo(({ vaults }) => {
                   AVG. APR
                 </h2>
                 <div className="text-[18px] text-neutral-50 font-semibold">
-                  {/* {$isWeb3Load ? (
-                    <div className="mt-1">
-                      <Skeleton height={21} width={130} />
-                    </div>
-                  ) : ( */}
-                    <p className={`${!$visible && "blur select-none"}`}>
-                      {$visible ? avgApr : "0000"}
-                    </p>
-                  {/* )} */}
+                  <p className={`${!$visible && "blur select-none"}`}>
+                    {$visible ? (
+                      <CountUp 
+                        end={Number(portfolio.apr)} 
+                        decimals={2}
+                        duration={1.5}
+                        enableScrollSpy={true}
+                        suffix="%"
+                      />
+                    ) : (
+                      "0000"
+                    )}
+                  </p>
                 </div>
               </div>
             </div>

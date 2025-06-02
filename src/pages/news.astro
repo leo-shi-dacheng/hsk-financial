@@ -1,0 +1,30 @@
+---
+import Layout from '@layouts/Layout.astro';
+import { News } from "@modules";
+---
+
+<Layout
+  title="Web3 News"
+  img="/ogs/news.png"
+  metaTitle="Web3 News - Latest cryptocurrency and blockchain updates"
+  metaUrl="https://stability.farm/news"
+  metaDescription="Stay updated with the latest Web3, DeFi, and blockchain news. Real-time cryptocurrency market updates, protocol announcements, and industry insights."
+>
+    <div class="news-page max-w-[1200px]">
+        <News client:only="react" />
+    </div>
+</Layout>
+
+<style>
+  .news-page {
+    min-height: 100vh;
+    padding: 2rem 1rem;
+    margin: 0 auto;
+  }
+  
+  @media (max-width: 768px) {
+    .news-page {
+      padding: 1rem 0.5rem;
+    }
+  }
+</style> 

@@ -1,0 +1,194 @@
+.floating-tokens-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  pointer-events: auto;
+  z-index: 1;
+  cursor: crosshair;
+}
+
+.floating-token {
+  position: absolute;
+  pointer-events: none;
+  filter: blur(2px);
+  opacity: 0.4;
+  transition: all 0.4s ease;
+  animation: continuousFloatUp infinite linear;
+  z-index: 1;
+  /* 从底部开始 */
+  top: 100vh;
+}
+
+.floating-token.highlighted {
+  filter: blur(0px) brightness(1.3);
+  opacity: 1;
+  transform: scale(1.4);
+  z-index: 100;
+  animation-play-state: paused;
+}
+
+.token-logo {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.4s ease;
+}
+
+.floating-token.highlighted .token-logo {
+  background: rgba(255, 255, 255, 0.25);
+  border: 2px solid rgba(255, 255, 255, 0.6);
+  box-shadow: 0 0 30px rgba(255, 255, 255, 0.4), 0 0 60px rgba(97, 47, 251, 0.3);
+}
+
+.token-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.token-tooltip {
+  position: absolute;
+  bottom: calc(100% + 15px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: 12px;
+  padding: 16px;
+  min-width: 150px;
+  text-align: center;
+  font-size: 12px;
+  animation: fadeInUp 0.3s ease;
+  z-index: 1000;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+}
+
+.token-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 8px solid transparent;
+  border-top-color: rgba(0, 0, 0, 0.95);
+}
+
+.token-name {
+  font-weight: 600;
+  color: #ECE3DA;
+  margin-bottom: 4px;
+  font-size: 13px;
+}
+
+.token-symbol {
+  color: #999;
+  font-size: 10px;
+  margin-bottom: 8px;
+}
+
+.token-price {
+  font-weight: 700;
+  color: #ECE3DA;
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.token-change {
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.token-change.positive {
+  color: #00ff88;
+}
+
+.token-change.negative {
+  color: #ff4757;
+}
+
+/* 连续循环向上浮动动画 - 像轮播图一样 */
+@keyframes continuousFloatUp {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.4;
+  }
+  90% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: translateY(-130vh) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .floating-token {
+    opacity: 0.3;
+    filter: blur(3px);
+  }
+  
+  .floating-token.highlighted {
+    transform: scale(1.2);
+  }
+  
+  .token-tooltip {
+    font-size: 10px;
+    padding: 12px;
+    min-width: 120px;
+  }
+  
+  .token-name {
+    font-size: 11px;
+  }
+  
+  .token-price {
+    font-size: 13px;
+  }
+  
+  .token-change {
+    font-size: 10px;
+  }
+}
+
+/* 减少动画对性能的影响 */
+@media (prefers-reduced-motion: reduce) {
+  .floating-token {
+    animation: none;
+    position: static;
+    opacity: 0.2;
+  }
+  
+  .token-tooltip {
+    animation: none;
+  }
+}
+
+/* 为更好的性能添加硬件加速 */
+.floating-token {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+} 

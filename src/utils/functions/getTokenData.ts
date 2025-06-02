@@ -1,5 +1,5 @@
 import type { TAddress, TTokenData } from "@types";
-import tokenlist from "@stabilitydao/stability/out/stability.tokenlist.json";
+import { tokenlist } from "@constants"; "@stabilitydao/stability/out/stability.tokenlist.json";
 
 /**
  * Function to get token data from token list

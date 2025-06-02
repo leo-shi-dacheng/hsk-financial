@@ -18,7 +18,7 @@ const CountersBlockCompact: React.FC<IProps> = ({
   return (
     <div className="w-full md:w-1/2 lg:w-4/12 min-[1440px]:w-4/12 flex p-[20px]">
       <a
-        className="bg-accent-950 hover:bg-[#1B0D45] p-[50px] rounded-[44px] flex flex-col w-full"
+        className="bg-accent-950 hover:bg-[#1B0D45] px-[50px] py-[30px] rounded-[44px] flex flex-col w-full"
         href={link}
         title={linkTitle}
         key={link}

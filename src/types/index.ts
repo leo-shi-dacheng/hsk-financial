@@ -45,6 +45,7 @@ type TAssetData = {
   symbol: string;
   website: string;
   price: number;
+  marketCap?: number;
   tags: string[];
   img: string;
 };

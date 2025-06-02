@@ -12,7 +12,7 @@ import {assetsPrices} from "@store";
 
 import { ASSETS_TABLE } from "@constants";
 
-import tokenlist from "./tokenlist.json";
+import { tokenlist } from "@constants";
 
 import type { TTableColumn, TAssetData } from "@types";
 
@@ -20,10 +20,20 @@ import clsx from "clsx";
 
 // tag 颜色映射
 const TAG_COLORS: Record<string, string> = {
-  Stablecoin: "bg-blue-100 text-blue-800",
-  Bridged: "bg-green-100 text-green-800",
-  USD: "bg-yellow-100 text-yellow-800",
-  ETH: "bg-purple-100 text-purple-800",
+  "Stablecoin": "bg-blue-100 text-blue-800",
+  "Bridged": "bg-green-100 text-green-800", 
+  "USD": "bg-yellow-100 text-yellow-800",
+  "ETH": "bg-purple-100 text-purple-800",
+  "BTC": "bg-orange-100 text-orange-800",
+  "Meme": "bg-pink-100 text-pink-800",
+  "Liquid staking": "bg-indigo-100 text-indigo-800",
+  "Wrapped native coin": "bg-teal-100 text-teal-800",
+  "Native coin HSK": "bg-cyan-100 text-cyan-800",
+  "ERC-4626": "bg-violet-100 text-violet-800",
+  "Rebase token": "bg-red-100 text-red-800",
+  "Gem wrapper": "bg-emerald-100 text-emerald-800",
+  "Pendle PT": "bg-amber-100 text-amber-800",
+  "S": "bg-lime-100 text-lime-800",
   // 其他tag...
   default: "bg-gray-200 text-gray-800"
 };
@@ -102,17 +112,20 @@ const Assets = (): JSX.Element => {
   const [tableData, setTableData] = useState<TAssetData[]>([]);
   const [filteredTableData, setFilteredTableData] = useState<TAssetData[]>([]);
 
-  const [isStablecoins, setIsStablecoins] = useState<boolean>(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   const tableHandler = () => {
     let data = tableData;
 
-    if (isStablecoins) {
-      data = filteredTableData.filter((asset) =>
-        tokenlist.tokens
+    if (selectedTags.length > 0) {
+      data = tableData.filter((asset) => {
+        const assetTags = tokenlist.tokens
           .find((token) => token.symbol === asset.symbol)
-          ?.tags?.includes("stablecoin")
-      );
+          ?.tags?.map(tagKey => tokenlist.tags[tagKey as keyof typeof tokenlist.tags]?.name)
+          .filter(Boolean) || [];
+        
+        return selectedTags.some(selectedTag => assetTags.includes(selectedTag));
+      });
     }
 
     sortTable({
@@ -126,66 +139,103 @@ const Assets = (): JSX.Element => {
   const initTableData = async () => {
     console.log(assets, 'assets');
     console.log($assetsPrices, '$assetsPrices');
-    if (assets && $assetsPrices) {
-      const allPrices = Object.values($assetsPrices).reduce((acc, cur) => {
-        return { ...acc, ...cur };
-      }, {});
 
-      // sonic tokenlist
-      // todo get chainId from web3 state
+    // HashKey Chain tokens - using Ethereum (chainId 1) as example since 177 is not available
+    // TODO: Replace with actual HashKey Chain (177) data when available
+    const tokenlistItems = tokenlist.tokens
+      .filter(token => token.chainId.toString() == '1')
+      .slice(0, 15); // Limit to 15 common tokens
 
-      const tokenlistItems = tokenlist.tokens
-        .filter(token => token.chainId.toString() == '146')
+    // Mock price data for popular tokens (replace with real API data)
+    const mockPrices: { [symbol: string]: number } = {
+      'USDC': 1.00,
+      'USDT': 0.999,
+      'WETH': 2420.50,
+      'WBTC': 43250.80,
+      'DAI': 1.001,
+      'SHIB': 0.00002156,
+      'LINK': 11.45,
+      'UNI': 7.82,
+      'MATIC': 0.42,
+      'CRO': 0.085,
+      'stETH': 2418.30,
+      'BUSD': 1.00,
+      'FRAX': 0.998,
+      'PEPE': 0.000008234,
+      'AAVE': 156.70
+    };
 
-      const assetsData: TAssetData[] = tokenlistItems.map(item => {
-        const assetPrice = allPrices[item.address.toLowerCase() as string]?.price || "0";
-        const asset = getAsset(item.chainId.toString(), item.address as `0x${string}`)
-        return {
-          symbol: item.symbol,
-          website: asset?.website || '',
-          price: Number(assetPrice),
-          // @ts-ignore
-          tags: (item.tags as string[])?.map(tag => tokenlist.tags[tag]?.name),
-          img: item.logoURI,
-        };
-      })
+    const assetsData: TAssetData[] = tokenlistItems.map(item => {
+      const asset = getAsset(item.chainId.toString(), item.address as `0x${string}`)
+      
+      // Use mock price data
+      const mockPrice = mockPrices[item.symbol] || (Math.random() * 1000);
+      
+      // Mock data for marketCap
+      const mockMarketCap = mockPrice * (1000000 + Math.random() * 100000000); // Price * supply estimate
+      
+      return {
+        symbol: item.symbol,
+        website: asset?.website || '',
+        price: mockPrice,
+        marketCap: mockMarketCap,
+        // @ts-ignore
+        tags: (item.tags as string[])?.map(tagKey => tokenlist.tags[tagKey as keyof typeof tokenlist.tags]?.name).filter(Boolean) || [],
+        img: item.logoURI,
+      };
+    });
 
-      setTableData(assetsData);
-      setFilteredTableData(assetsData);
-    }
+    setTableData(assetsData);
+    setFilteredTableData(assetsData);
+  };
+
+  const availableTagNames = Object.values(tokenlist.tags).map(tag => tag.name);
+
+  const handleTagToggle = (tagName: string) => {
+    setSelectedTags(prev => 
+      prev.includes(tagName) 
+        ? prev.filter(tag => tag !== tagName)
+        : [...prev, tagName]
+    );
   };
 
   useEffect(() => {
     tableHandler();
-  }, [isStablecoins]);
+  }, [selectedTags, tableData]);
 
   useEffect(() => {
     initTableData();
-  }, [$assetsPrices]);
+  }, []);
 
   return (
     <div className="max-w-[1200px] w-full xl:min-w-[1200px] px-6 py-6">
       <div className="hidden">
         <Breadcrumbs links={["Platform", "Assets"]} />
 
-        <HeadingText text="Hashkey Assets" scale={1} styles="mb-0" />
+        <HeadingText text="HashKey Chain Assets (15 Common Tokens)" scale={1} styles="mb-0" />
       </div>
       
 
-      {/* <div className="mb-4 flex justify-center">
-        {tokenlist.name} {`${tokenlist.version.major}.${tokenlist.version.minor}.${tokenlist.version.patch}`} from {(new Date(Date.parse(tokenlist.timestamp)).toLocaleDateString())}
-      </div> */}
-
-      <div className="flex items-center justify-start mb-3 select-none font-manrope text-[14px] font-semibold">
-        <label className="inline-flex items-center cursor-pointer bg-accent-900 h-10 rounded-2xl">
-          <div className="flex items-center gap-[10px] py-[10px] px-4">
-            <Checkbox
-              checked={isStablecoins}
-              onChange={() => setIsStablecoins((prev) => !prev)}
-            />
-            <span className="text-neutral-50">Stablecoins</span>
-          </div>
-        </label>
+      <div className="flex flex-wrap items-center justify-start gap-2 mb-3 select-none font-manrope text-[13px] font-semibold">
+        {availableTagNames.map(tagName => (
+          <label 
+            key={tagName}
+            className={clsx(
+              "inline-flex items-center cursor-pointer rounded-2xl px-3 py-[6px] transition-all",
+              selectedTags.includes(tagName)
+                ? TAG_COLORS[tagName] || TAG_COLORS.default
+                : "bg-accent-900 text-neutral-400 hover:text-neutral-50"
+            )}
+          >
+            <div className="flex items-center gap-2">
+              <Checkbox
+                checked={selectedTags.includes(tagName)}
+                onChange={() => handleTagToggle(tagName)}
+              />
+              <span>{tagName}</span>
+            </div>
+          </label>
+        ))}
       </div>
 
       <table className="font-sora w-full border-separate border-spacing-y-2">
@@ -207,7 +257,7 @@ const Assets = (): JSX.Element => {
         </thead>
         <tbody className="text-[15px]">
           {!!filteredTableData.length &&
-            filteredTableData.map(({ symbol, price, website, tags, img }) => (
+            filteredTableData.map(({ symbol, price, marketCap, website, tags, img }) => (
               <tr
                 className="h-[56px] hover:bg-accent-950 rounded-xl"
                 key={symbol}
@@ -218,8 +268,13 @@ const Assets = (): JSX.Element => {
                     <span className="font-bold">{symbol}</span>
                   </div>
                 </td>
-                <td className="px-4 py-4 text-end min-w-[80px]" style={price == 0 ? { color: 'red' } : {}}>
+                <td className="px-4 py-4 min-w-[80px]" style={price == 0 ? { color: 'red' } : {}}>
                   <span className="mr-[10px]">${formatNumber(price, price < 1 ? "smallNumbers" : "format")}</span>
+                </td>
+                <td className="px-4 py-4 min-w-[100px]">
+                  <span className="mr-[10px]">
+                    {marketCap !== undefined ? formatNumber(marketCap, "abbreviate") : 'N/A'}
+                  </span>
                 </td>
                 <td className="px-4 py-4">
                   {tags?.map(tag => (

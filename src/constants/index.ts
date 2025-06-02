@@ -225,6 +225,8 @@ const STABILITY_STRATEGY_LABELS: { [address: string]: string } = {
   [STABILITY_AAVE_POOLS[2]]: "Stable Jack",
 };
 
+import tokenlist from "./tokenlist.json";
+
 export {
   APRsType,
   TABLE,
@@ -267,4 +269,5 @@ export {
   STABILITY_TOKENS,
   STABILITY_AAVE_POOLS,
   STABILITY_STRATEGY_LABELS,
+  tokenlist
 };

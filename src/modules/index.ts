@@ -15,6 +15,8 @@ import { Network } from "./Platform/components/Network";
 import { Node } from "./Platform/components/Network/Node";
 import { Strategies } from "./Platform/components/Strategies";
 import { Strategy } from "./Platform/components/Strategies/Strategy";
+import { News } from "./Platform/components/News";
+import { NewsDetail } from "./Platform/components/News/NewsDetail";
 import { Swapper } from "./Platform/components/Swapper";
 import { Users } from "./Users";
 import { Contests } from "./Contests";
@@ -40,6 +42,8 @@ export {
   Node,
   Users,
   Strategy,
+  News,
+  NewsDetail,
   Contests,
   Contest,
   Home,

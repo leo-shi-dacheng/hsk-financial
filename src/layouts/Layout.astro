@@ -59,11 +59,13 @@ const {
   </head>
   <body>
     <App client:only="react">
-      <Header client:only="react"/>
-      <main>
-        <slot />
-      </main>
-      <Footer client:only="react"/>
+      <div class="app-container">
+        <Header client:only="react"/>
+        <main class="main-content">
+          <slot />
+        </main>
+        <Footer client:only="react" class="footer-fixed"/>
+      </div>
     </App>
   </body>
 </html>
@@ -81,6 +83,28 @@ const {
 	body {
 		display: flex;
   		flex-direction: column;
+	}
+
+	.app-container {
+		display: flex;
+		flex-direction: column;
+		height: 100vh;
+		overflow: hidden;
+	}
+
+	.main-content {
+		flex: 1;
+		overflow-y: auto;
+		padding: 1rem 0.5rem;
+		max-width: calc(100% - 2rem);
+		margin: 0 auto;
+		color: white;
+		font-size: 20px;
+		line-height: 1.6;
+	}
+
+	.footer-fixed {
+		flex-shrink: 0;
 	}
 
 	::-webkit-scrollbar {
@@ -188,17 +212,8 @@ const {
 		background-color: #2B1570;
 	}
 
-	main {
-		margin: 0 auto auto auto;
-		padding: 1rem 0.5rem;
-		max-width: calc(100% - 2rem);
-		color: white;
-		font-size: 20px;
-		line-height: 1.6;
-		min-height:80vh;
-	}
 	@media (max-width: 500px) {
-		main {
+		.main-content {
 			max-width: 100%;
 		}
 	}

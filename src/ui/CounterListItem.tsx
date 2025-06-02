@@ -8,7 +8,7 @@ interface ICounterProps {
 
 const CounterListItem: React.FC<ICounterProps> = ({ color, name, value }) => {
   return (
-    <div className="flex h-[58px] justify-between items-center rounded-[24px] gap-[6px] w-full  pl-[16px] pr-[24px]">
+    <div className="flex h-[48px] justify-between items-center rounded-[24px] gap-[6px] w-full  pl-[16px] pr-[24px]">
       <div className="flex items-center gap-[8px] justify-center">
         <ColorIndicator color={color} />
         <span className="text-[14px] whitespace-nowrap font-semibold text-neutral-500">

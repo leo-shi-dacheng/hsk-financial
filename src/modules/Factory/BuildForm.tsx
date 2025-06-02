@@ -27,7 +27,7 @@ import {
 
 import type { TInitParams, TAddress, TInputItem } from "@types";
 
-import tokenlist from "@stabilitydao/stability/out/stability.tokenlist.json";
+import { tokenlist } from "@constants"; "@stabilitydao/stability/out/stability.tokenlist.json";
 interface IProps {
   vaultType: string;
   strategyId: string;

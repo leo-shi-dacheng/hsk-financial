@@ -1,62 +1,69 @@
 import { useState, useEffect } from "react";
 
-import { type StrategyShortId } from "@stabilitydao/stability";
-
-import { Breadcrumbs, HeadingText, TableColumnSort, Counter } from "@ui";
+import { Breadcrumbs, HeadingText, Counter } from "@ui";
 
 import { StrategyStatus, ProtocolsChip } from "../../ui";
-
-import { sortTable } from "@utils";
 
 import { STRATEGIES_TABLE } from "@constants";
 
 import { STRATEGIES_INFO, STRATEGY_STATUSES } from "../../constants";
 
-import type { TStrategyState, TTableColumn, TTableStrategy } from "@types";
+import { StrategiesApiService, type StrategyApiData } from "../../services/strategiesApi";
 
-const toStrategy = (id: string): void => {
-  // window.location.href = `/strategies/${id.toLowerCase()}`;
+import type { TStrategyState, TTableColumn } from "@types";
+
+const toStrategy = (shortId: string): void => {
+  window.location.href = `/strategies/${shortId.toLowerCase()}`;
+};
+
+// Custom sort function for StrategyApiData
+const sortStrategiesData = (
+  data: StrategyApiData[],
+  table: TTableColumn[]
+): StrategyApiData[] => {
+  let sortedData = [...data];
+
+  table.forEach((column: TTableColumn) => {
+    if (column.sortType !== "none") {
+      sortedData = sortedData.sort((a, b) => {
+        const aValue = String((a as any)[column.keyName] || '');
+        const bValue = String((b as any)[column.keyName] || '');
+        
+        if (column.dataType === "number") {
+          const aNum = parseFloat(aValue) || 0;
+          const bNum = parseFloat(bValue) || 0;
+          return column.sortType === "asc" ? aNum - bNum : bNum - aNum;
+        } else {
+          return column.sortType === "asc" 
+            ? aValue.localeCompare(bValue) 
+            : bValue.localeCompare(aValue);
+        }
+      });
+    }
+  });
+
+  return sortedData;
 };
 
 const Strategies = (): JSX.Element => {
   const [tableStates, setTableStates] = useState(STRATEGIES_TABLE);
-  const [tableData, setTableData] = useState<TTableStrategy[]>([]);
-  const [filteredTableData, setFilteredTableData] = useState<TTableStrategy[]>(
+  const [tableData, setTableData] = useState<StrategyApiData[]>([]);
+  const [filteredTableData, setFilteredTableData] = useState<StrategyApiData[]>(
     []
   );
   const [activeStrategies, setActiveStrategies] = useState(STRATEGIES_INFO);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const initTableData = async () => {
-    const searchParams = new URLSearchParams(window.location.search);
-
-    const strategyStatuses = searchParams.getAll("status");
-
-    const strategies = {
-      X:  {
-        "id": "aave",
-        "shortId": "A",
-        "state": "LIVE",
-        "contractGithubId": 252,
-        "color": "#e7c397",
-        "bgColor": "#000000",
-        "baseStrategies": [],
-        "protocols": [
-            "aave:aaveV3"
-        ],
-        "description": "Lend asset on Aave V3 based lending markets"
-      }
-    }
-    if (strategies) {
-      const strategiesData = Object.values(strategies).map(
-        ({ id, shortId, state, contractGithubId, color, bgColor }) => ({
-          id,
-          shortId,
-          state,
-          contractGithubId,
-          color,
-          bgColor,
-        })
-      );
+    setLoading(true);
+    setError(null);
+    
+    try {
+      const searchParams = new URLSearchParams(window.location.search);
+      const strategyStatuses = searchParams.getAll("status");
+      
+      const strategiesData = await StrategiesApiService.fetchStrategies();
 
       const filteredStrategiesData = strategyStatuses.length
         ? strategiesData.filter((strategy) =>
@@ -77,6 +84,11 @@ const Strategies = (): JSX.Element => {
       setTableData(strategiesData);
       setActiveStrategies(filteredStrategies);
       setFilteredTableData(filteredStrategiesData);
+    } catch (err) {
+      console.error('Error initializing table data:', err);
+      setError(err instanceof Error ? err.message : 'Failed to load strategies');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -137,7 +149,7 @@ const Strategies = (): JSX.Element => {
       (strategy) => strategy.active
     );
 
-    let data: TTableStrategy[] = [];
+    let data: StrategyApiData[] = [];
     //filter
     strategiesToFilter.forEach((strategy) => {
       if (strategy.active) {
@@ -150,13 +162,35 @@ const Strategies = (): JSX.Element => {
         );
       }
     });
+    
     //sort
-    sortTable({
-      table,
-      setTable: setTableStates,
-      tableData: data,
-      setTableData: setFilteredTableData,
+    const sortedData = sortStrategiesData(data, table);
+    setFilteredTableData(sortedData);
+    setTableStates(table);
+  };
+
+  // Custom handler for column sort
+  const handleColumnSort = (index: number, _columnName: string) => {
+    const newTableStates = [...tableStates];
+    
+    // Reset all other columns
+    newTableStates.forEach((col, i) => {
+      if (i !== index) {
+        col.sortType = "none";
+      }
     });
+    
+    // Toggle current column
+    const currentSort = newTableStates[index].sortType;
+    if (currentSort === "none") {
+      newTableStates[index].sortType = "desc";
+    } else if (currentSort === "desc") {
+      newTableStates[index].sortType = "asc";
+    } else {
+      newTableStates[index].sortType = "none";
+    }
+    
+    tableHandler(newTableStates);
   };
 
   useEffect(() => {
@@ -192,32 +226,60 @@ const Strategies = (): JSX.Element => {
           <thead className="bg-accent-950 text-neutral-600 h-[36px]">
             <tr className="text-[12px] uppercase">
               {tableStates.map((value: TTableColumn, index: number) => (
-                <TableColumnSort
+                <th 
                   key={value.name + index}
-                  index={index}
-                  value={value.name}
-                  sort={sortTable}
-                  table={tableStates}
-                  setTable={setTableStates}
-                  tableData={filteredTableData}
-                  setTableData={setFilteredTableData}
-                />
+                  className="px-4 py-2 text-left cursor-pointer hover:bg-accent-900 transition-colors"
+                  onClick={() => handleColumnSort(index, value.name)}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="text-[12px] uppercase">{value.name}</span>
+                    {value.sortType !== "none" && (
+                      <span className="text-xs">
+                        {value.sortType === "asc" ? "↑" : "↓"}
+                      </span>
+                    )}
+                  </div>
+                </th>
               ))}
             </tr>
           </thead>
           <tbody className="text-[14px]">
-            {!!filteredTableData.length ? (
+            {loading ? (
+              <tr>
+                <td colSpan={4} className="px-4 py-8 text-center">
+                  <div className="flex items-center justify-center">
+                    <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
+                    <span className="ml-2">Loading strategies...</span>
+                  </div>
+                </td>
+              </tr>
+            ) : error ? (
+              <tr>
+                <td colSpan={4} className="px-4 py-8 text-center">
+                  <div className="text-red-400">
+                    <p className="text-lg font-semibold">Error loading strategies</p>
+                    <p className="text-sm mt-2">{error}</p>
+                    <button 
+                      onClick={initTableData}
+                      className="mt-4 px-4 py-2 bg-accent-800 hover:bg-accent-700 rounded-lg transition-colors"
+                    >
+                      Try Again
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ) : !!filteredTableData.length ? (
               filteredTableData.map(
-                ({ id, shortId, state, contractGithubId, color, bgColor }) => {
+                ({ id, shortId, state, color, bgColor }) => {
                   return (
                     <tr
                       onClick={() => toStrategy(shortId)}
-                      className="h-[48px] hover:bg-accent-950 cursor-pointer"
+                      className="h-[48px] hover:bg-accent-950 cursor-pointer transition-colors"
                       key={shortId}
                     >
                       <td className="px-4 py-3 text-center sticky md:relative left-0 md:table-cell bg-accent-950 md:bg-transparent z-10">
                         <ProtocolsChip
-                          id={shortId as StrategyShortId}
+                          id={shortId as any}
                           bgColor={bgColor}
                           color={color}
                         />
@@ -234,10 +296,10 @@ const Strategies = (): JSX.Element => {
                         <div className="flex items-center justify-center">
                           <a
                             onClick={(event) => event.stopPropagation()}
-                            className="inline-flex"
-                            href={``}
+                            className="inline-flex hover:opacity-80 transition-opacity"
+                            href={`https://github.com/stabilitydao/stability-contracts/issues`}
                             target="_blank"
-                            title="Go to strategy issue page on Github"
+                            title="Go to strategy repository on Github"
                           >
                             <img
                               src="/icons/github.svg"
@@ -253,10 +315,10 @@ const Strategies = (): JSX.Element => {
               )
             ) : (
               <tr>
-                <td>
-                  <p className="text-[18px]">No results found.</p>
-                  <p className="min-w-[200px]">
-                    Try clearing your filters or changing your search term.
+                <td colSpan={4} className="px-4 py-8 text-center">
+                  <p className="text-[18px]">No strategies found.</p>
+                  <p className="min-w-[200px] text-neutral-400 mt-2">
+                    Try clearing your filters or adjusting your search criteria.
                   </p>
                 </td>
               </tr>

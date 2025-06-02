@@ -13,13 +13,9 @@ import { Pagination } from "./components/Pagination";
 import { Filters } from "./components/Filters";
 import { Portfolio } from "./components/Portfolio";
 
-import { chains } from "@stabilitydao/stability";
-
-import { TimeDifferenceIndicator, FullPageLoader, ErrorMessage } from "@ui";
+import { TimeDifferenceIndicator, FullPageLoader, ErrorMessage, CountUp } from "@ui";
 
 import {
-  vaults,
-  isVaultsLoaded,
   aprFilter,
   connected,
   error,
@@ -45,27 +41,680 @@ import type {
   TVault,
   TTableColumn,
   TEarningData,
-  TVaults,
   TAPRPeriod,
   TTableActiveParams,
   TVSHoldModalState,
+  TChain,
 } from "@types";
+
+// Mock data based on the user's requirements
+const MOCK_VAULTS: TVault[] = [
+  {
+    address: "0x1234567890123456789012345678901234567891" as const,
+    name: "PacARB Vault",
+    symbol: "PacARB",
+    created: "1640995200",
+    assetsPricesOnCreation: ["1.0"],
+    type: "Money Market",
+    strategy: "MMF",
+    shareprice: "1.0",
+    sharePriceLast: "1.0",
+    tvl: "7052309.71",
+    strategySpecific: "",
+    balance: "1500000000000000000000", // 1500 tokens for portfolio display
+    balanceInUSD: 0,
+    lastHardWork: "1640995200",
+    hardWorkOnDeposit: false,
+    daily: 0,
+    assets: [
+      {
+        address: "0x1234567890123456789012345678901234567891" as const,
+        color: "#ff6b35",
+        logo: "https://assets.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png",
+        name: "PacARB",
+        symbol: "PacARB",
+      },
+    ],
+    assetsSymbol: "PacARB",
+    assetsProportions: [100],
+    strategyInfo: {
+      id: "Money Market Fund",
+      shortId: "MMF",
+      color: "#ffffff",
+      bgColor: "#4f46e5",
+      protocols: [
+        {
+          name: "Pacific",
+          logoSrc: "https://assets.coingecko.com/coins/images/12504/large/uniswap-uni.png",
+        },
+      ],
+      baseStrategies: [],
+      ammAdapter: "",
+      sourceCode: "",
+    },
+    il: 0,
+    underlying: {
+      address: "0x1234567890123456789012345678901234567891" as const,
+      symbol: "PacARB",
+      decimals: 18,
+      logo: "https://assets.coingecko.com/coins/images/12559/large/Avalanche_Circle_RedWhite_Trans.png",
+    },
+    strategyAddress: "0x1234567890123456789012345678901234567891" as const,
+    strategyDescription: "Pacific ARB Money Market Fund",
+    status: "Active",
+    version: "1.0.0",
+    strategyVersion: "1.0.0",
+    NFTtokenID: "",
+    gasReserve: "0",
+    rebalances: { daily: 0, weekly: 0 },
+    earningData: {
+      apr: { latest: "0", daily: "0", weekly: "0" },
+      apy: { latest: "0", daily: "0", weekly: "0" },
+      poolSwapFeesAPR: { latest: "0", daily: "0", weekly: "0" },
+      farmAPR: { latest: "0", daily: "0", weekly: "0" },
+      gemsAPR: { latest: "0", daily: "0", weekly: "0" },
+    },
+    sortAPR: "0",
+    pool: {},
+    alm: { protocol: "", amountToken0: 0, amountToken1: 0, tvl: 0, positions: [] },
+    risk: { factors: [], isRektStrategy: false, symbol: "" },
+    vsHold24H: 0,
+    vsHoldWeekly: 0,
+    lifetimeVsHold: 0,
+    vsHoldAPR: 0,
+    assetsVsHold: [],
+    isVsActive: false,
+    yearnProtocols: [],
+    network: "146",
+    sonicActivePoints: 1,
+    ringsPoints: undefined,
+    liveAPR: undefined,
+    assetAPR: undefined,
+  },
+  {
+    address: "0x1234567890123456789012345678901234567892" as const,
+    name: "CPIC Estable Money Market Fund",
+    symbol: "CPIC-MMF",
+    created: "1640995200",
+    assetsPricesOnCreation: ["1.0"],
+    type: "Money Market",
+    strategy: "MMF",
+    shareprice: "1.0",
+    sharePriceLast: "1.0",
+    tvl: "99870675.30",
+    strategySpecific: "",
+    balance: "2300000000000000000000", // 2300 tokens for portfolio display
+    balanceInUSD: 0,
+    lastHardWork: "1640995200",
+    hardWorkOnDeposit: false,
+    daily: 4.48 / 365,
+    assets: [
+      {
+        address: "0x1234567890123456789012345678901234567892" as const,
+        color: "#22c55e",
+        logo: "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png",
+        name: "CPIC Estable",
+        symbol: "CPIC",
+      },
+    ],
+    assetsSymbol: "CPIC",
+    assetsProportions: [100],
+    strategyInfo: {
+      id: "Money Market Fund",
+      shortId: "MMF",
+      color: "#ffffff",
+      bgColor: "#22c55e",
+      protocols: [
+        {
+          name: "CPIC",
+          logoSrc: "https://assets.coingecko.com/coins/images/12645/large/AAVE.png",
+        },
+      ],
+      baseStrategies: [],
+      ammAdapter: "",
+      sourceCode: "",
+    },
+    il: 0,
+    underlying: {
+      address: "0x1234567890123456789012345678901234567892" as const,
+      symbol: "CPIC",
+      decimals: 18,
+      logo: "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png",
+    },
+    strategyAddress: "0x1234567890123456789012345678901234567892" as const,
+    strategyDescription: "CPIC Estable Money Market Fund",
+    status: "Active",
+    version: "1.0.0",
+    strategyVersion: "1.0.0",
+    NFTtokenID: "",
+    gasReserve: "0",
+    rebalances: { daily: 0, weekly: 0 },
+    earningData: {
+      apr: { latest: "4.48", daily: "4.48", weekly: "4.48" },
+      apy: { latest: "4.58", daily: "4.58", weekly: "4.58" },
+      poolSwapFeesAPR: { latest: "0", daily: "0", weekly: "0" },
+      farmAPR: { latest: "4.48", daily: "4.48", weekly: "4.48" },
+      gemsAPR: { latest: "0", daily: "0", weekly: "0" },
+    },
+    sortAPR: "4.48",
+    pool: {},
+    alm: { protocol: "", amountToken0: 0, amountToken1: 0, tvl: 0, positions: [] },
+    risk: { factors: [], isRektStrategy: false, symbol: "" },
+    vsHold24H: 0,
+    vsHoldWeekly: 0,
+    lifetimeVsHold: 0,
+    vsHoldAPR: 0,
+    assetsVsHold: [],
+    isVsActive: false,
+    yearnProtocols: [],
+    network: "146",
+    sonicActivePoints: 1,
+    ringsPoints: undefined,
+    liveAPR: undefined,
+    assetAPR: undefined,
+  },
+  {
+    address: "0x1234567890123456789012345678901234567893" as const,
+    name: "AOABT Vault",
+    symbol: "AOABT",
+    created: "1640995200",
+    assetsPricesOnCreation: ["1.0"],
+    type: "Yield",
+    strategy: "YLD",
+    shareprice: "1.0",
+    sharePriceLast: "1.0",
+    tvl: "3568829.96",
+    strategySpecific: "",
+    balance: "500000000000000000000", // 500 tokens for portfolio display
+    balanceInUSD: 0,
+    lastHardWork: "1640995200",
+    hardWorkOnDeposit: false,
+    daily: 8.17 / 365,
+    assets: [
+      {
+        address: "0x1234567890123456789012345678901234567893" as const,
+        color: "#8b5cf6",
+        logo: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
+        name: "AOABT",
+        symbol: "AOABT",
+      },
+    ],
+    assetsSymbol: "AOABT",
+    assetsProportions: [100],
+    strategyInfo: {
+      id: "Yield Strategy",
+      shortId: "YLD",
+      color: "#ffffff",
+      bgColor: "#8b5cf6",
+      protocols: [
+        {
+          name: "Asseto",
+          logoSrc: "https://assets.coingecko.com/coins/images/12124/large/Curve.png",
+        },
+      ],
+      baseStrategies: [],
+      ammAdapter: "",
+      sourceCode: "",
+    },
+    il: 0,
+    underlying: {
+      address: "0x1234567890123456789012345678901234567893" as const,
+      symbol: "AOABT",
+      decimals: 18,
+      logo: "https://assets.coingecko.com/coins/images/1/large/bitcoin.png",
+    },
+    strategyAddress: "0x1234567890123456789012345678901234567893" as const,
+    strategyDescription: "AOABT Yield Strategy",
+    status: "Active",
+    version: "1.0.0",
+    strategyVersion: "1.0.0",
+    NFTtokenID: "",
+    gasReserve: "0",
+    rebalances: { daily: 0, weekly: 0 },
+    earningData: {
+      apr: { latest: "8.17", daily: "8.17", weekly: "8.17" },
+      apy: { latest: "8.51", daily: "8.51", weekly: "8.51" },
+      poolSwapFeesAPR: { latest: "0", daily: "0", weekly: "0" },
+      farmAPR: { latest: "8.17", daily: "8.17", weekly: "8.17" },
+      gemsAPR: { latest: "0", daily: "0", weekly: "0" },
+    },
+    sortAPR: "8.17",
+    pool: {},
+    alm: { protocol: "", amountToken0: 0, amountToken1: 0, tvl: 0, positions: [] },
+    risk: { factors: [], isRektStrategy: false, symbol: "" },
+    vsHold24H: 0,
+    vsHoldWeekly: 0,
+    lifetimeVsHold: 0,
+    vsHoldAPR: 0,
+    assetsVsHold: [],
+    isVsActive: false,
+    yearnProtocols: [],
+    network: "146",
+    sonicActivePoints: 1,
+    ringsPoints: undefined,
+    liveAPR: undefined,
+    assetAPR: undefined,
+  },
+  {
+    address: "0x1234567890123456789012345678901234567894" as const,
+    name: "Bosera HKD MMF ETF",
+    symbol: "BHKD-MMF",
+    created: "1640995200",
+    assetsPricesOnCreation: ["1.0"],
+    type: "ETF",
+    strategy: "MMF",
+    shareprice: "1.0",
+    sharePriceLast: "1.0",
+    tvl: "28784346.8",
+    strategySpecific: "",
+    balance: "0", // No balance for this one
+    balanceInUSD: 0,
+    lastHardWork: "1640995200",
+    hardWorkOnDeposit: false,
+    daily: 4.125 / 365,
+    assets: [
+      {
+        address: "0x1234567890123456789012345678901234567894" as const,
+        color: "#f59e0b",
+        logo: "https://assets.coingecko.com/coins/images/279/large/ethereum.png",
+        name: "Bosera HKD MMF ETF",
+        symbol: "BHKD",
+      },
+    ],
+    assetsSymbol: "BHKD",
+    assetsProportions: [100],
+    strategyInfo: {
+      id: "Money Market Fund ETF",
+      shortId: "MMF",
+      color: "#ffffff",
+      bgColor: "#f59e0b",
+      protocols: [
+        {
+          name: "Bosera",
+          logoSrc: "https://assets.coingecko.com/coins/images/877/large/chainlink-new-logo.png",
+        },
+      ],
+      baseStrategies: [],
+      ammAdapter: "",
+      sourceCode: "",
+    },
+    il: 0,
+    underlying: {
+      address: "0x1234567890123456789012345678901234567894" as const,
+      symbol: "BHKD",
+      decimals: 18,
+      logo: "https://assets.coingecko.com/coins/images/279/large/ethereum.png",
+    },
+    strategyAddress: "0x1234567890123456789012345678901234567894" as const,
+    strategyDescription: "Bosera HKD Money Market Fund ETF",
+    status: "Active",
+    version: "1.0.0",
+    strategyVersion: "1.0.0",
+    NFTtokenID: "",
+    gasReserve: "0",
+    rebalances: { daily: 0, weekly: 0 },
+    earningData: {
+      apr: { latest: "4.125", daily: "4.125", weekly: "4.125" },
+      apy: { latest: "4.21", daily: "4.21", weekly: "4.21" },
+      poolSwapFeesAPR: { latest: "0", daily: "0", weekly: "0" },
+      farmAPR: { latest: "4.125", daily: "4.125", weekly: "4.125" },
+      gemsAPR: { latest: "0", daily: "0", weekly: "0" },
+    },
+    sortAPR: "4.125",
+    pool: {},
+    alm: { protocol: "", amountToken0: 0, amountToken1: 0, tvl: 0, positions: [] },
+    risk: { factors: [], isRektStrategy: false, symbol: "" },
+    vsHold24H: 0,
+    vsHoldWeekly: 0,
+    lifetimeVsHold: 0,
+    vsHoldAPR: 0,
+    assetsVsHold: [],
+    isVsActive: false,
+    yearnProtocols: [],
+    network: "146",
+    sonicActivePoints: 1,
+    ringsPoints: undefined,
+    liveAPR: undefined,
+    assetAPR: undefined,
+  },
+  {
+    address: "0x1234567890123456789012345678901234567895" as const,
+    name: "Bosera USD MMF ETF",
+    symbol: "BUSD-MMF",
+    created: "1640995200",
+    assetsPricesOnCreation: ["1.0"],
+    type: "ETF",
+    strategy: "MMF",
+    shareprice: "1.0",
+    sharePriceLast: "1.0",
+    tvl: "8535373.57",
+    strategySpecific: "",
+    balance: "0", // No balance for this one
+    balanceInUSD: 0,
+    lastHardWork: "1640995200",
+    hardWorkOnDeposit: false,
+    daily: 4.625 / 365,
+    assets: [
+      {
+        address: "0x1234567890123456789012345678901234567895" as const,
+        color: "#06b6d4",
+        logo: "https://assets.coingecko.com/coins/images/325/large/Tether.png",
+        name: "Bosera USD MMF ETF",
+        symbol: "BUSD",
+      },
+    ],
+    assetsSymbol: "BUSD",
+    assetsProportions: [100],
+    strategyInfo: {
+      id: "Money Market Fund ETF",
+      shortId: "MMF",
+      color: "#ffffff",
+      bgColor: "#06b6d4",
+      protocols: [
+        {
+          name: "Bosera",
+          logoSrc: "https://assets.coingecko.com/coins/images/4713/large/matic-token-icon.png",
+        },
+      ],
+      baseStrategies: [],
+      ammAdapter: "",
+      sourceCode: "",
+    },
+    il: 0,
+    underlying: {
+      address: "0x1234567890123456789012345678901234567895" as const,
+      symbol: "BUSD",
+      decimals: 18,
+      logo: "https://assets.coingecko.com/coins/images/325/large/Tether.png",
+    },
+    strategyAddress: "0x1234567890123456789012345678901234567895" as const,
+    strategyDescription: "Bosera USD Money Market Fund ETF",
+    status: "Active",
+    version: "1.0.0",
+    strategyVersion: "1.0.0",
+    NFTtokenID: "",
+    gasReserve: "0",
+    rebalances: { daily: 0, weekly: 0 },
+    earningData: {
+      apr: { latest: "4.625", daily: "4.625", weekly: "4.625" },
+      apy: { latest: "4.73", daily: "4.73", weekly: "4.73" },
+      poolSwapFeesAPR: { latest: "0", daily: "0", weekly: "0" },
+      farmAPR: { latest: "4.625", daily: "4.625", weekly: "4.625" },
+      gemsAPR: { latest: "0", daily: "0", weekly: "0" },
+    },
+    sortAPR: "4.625",
+    pool: {},
+    alm: { protocol: "", amountToken0: 0, amountToken1: 0, tvl: 0, positions: [] },
+    risk: { factors: [], isRektStrategy: false, symbol: "" },
+    vsHold24H: 0,
+    vsHoldWeekly: 0,
+    lifetimeVsHold: 0,
+    vsHoldAPR: 0,
+    assetsVsHold: [],
+    isVsActive: false,
+    yearnProtocols: [],
+    network: "146",
+    sonicActivePoints: 1,
+    ringsPoints: undefined,
+    liveAPR: undefined,
+    assetAPR: undefined,
+  },
+  {
+    address: "0x1234567890123456789012345678901234567896" as const,
+    name: "Matrixdock xAUM",
+    symbol: "xAUM",
+    created: "1640995200",
+    assetsPricesOnCreation: ["1.0"],
+    type: "Asset Management",
+    strategy: "AUM",
+    shareprice: "1.0",
+    sharePriceLast: "1.0",
+    tvl: "41360000",
+    strategySpecific: "",
+    balance: "0", // No balance for this one
+    balanceInUSD: 0,
+    lastHardWork: "1640995200",
+    hardWorkOnDeposit: false,
+    daily: 0,
+    assets: [
+      {
+        address: "0x1234567890123456789012345678901234567896" as const,
+        color: "#10b981",
+        logo: "https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png",
+        name: "Matrixdock xAUM",
+        symbol: "xAUM",
+      },
+    ],
+    assetsSymbol: "xAUM",
+    assetsProportions: [100],
+    strategyInfo: {
+      id: "Asset Under Management",
+      shortId: "AUM",
+      color: "#ffffff",
+      bgColor: "#10b981",
+      protocols: [
+        {
+          name: "Matrixdock",
+          logoSrc: "https://assets.coingecko.com/coins/images/12171/large/polkadot.png",
+        },
+      ],
+      baseStrategies: [],
+      ammAdapter: "",
+      sourceCode: "",
+    },
+    il: 0,
+    underlying: {
+      address: "0x1234567890123456789012345678901234567896" as const,
+      symbol: "xAUM",
+      decimals: 18,
+      logo: "https://assets.coingecko.com/coins/images/825/large/bnb-icon2_2x.png",
+    },
+    strategyAddress: "0x1234567890123456789012345678901234567896" as const,
+    strategyDescription: "Matrixdock Asset Under Management",
+    status: "Active",
+    version: "1.0.0",
+    strategyVersion: "1.0.0",
+    NFTtokenID: "",
+    gasReserve: "0",
+    rebalances: { daily: 0, weekly: 0 },
+    earningData: {
+      apr: { latest: "0", daily: "0", weekly: "0" },
+      apy: { latest: "0", daily: "0", weekly: "0" },
+      poolSwapFeesAPR: { latest: "0", daily: "0", weekly: "0" },
+      farmAPR: { latest: "0", daily: "0", weekly: "0" },
+      gemsAPR: { latest: "0", daily: "0", weekly: "0" },
+    },
+    sortAPR: "0",
+    pool: {},
+    alm: { protocol: "", amountToken0: 0, amountToken1: 0, tvl: 0, positions: [] },
+    risk: { factors: [], isRektStrategy: false, symbol: "" },
+    vsHold24H: 0,
+    vsHoldWeekly: 0,
+    lifetimeVsHold: 0,
+    vsHoldAPR: 0,
+    assetsVsHold: [],
+    isVsActive: false,
+    yearnProtocols: [],
+    network: "146",
+    sonicActivePoints: 1,
+    ringsPoints: undefined,
+    liveAPR: undefined,
+    assetAPR: undefined,
+  },
+  {
+    address: "0x1234567890123456789012345678901234567897" as const,
+    name: "Matrixdock STBT",
+    symbol: "STBT",
+    created: "1640995200",
+    assetsPricesOnCreation: ["1.0"],
+    type: "Stablecoin",
+    strategy: "STB",
+    shareprice: "1.0",
+    sharePriceLast: "1.0",
+    tvl: "13336039.21",
+    strategySpecific: "",
+    balance: "0", // No balance for this one
+    balanceInUSD: 0,
+    lastHardWork: "1640995200",
+    hardWorkOnDeposit: false,
+    daily: 3.79 / 365,
+    assets: [
+      {
+        address: "0x1234567890123456789012345678901234567897" as const,
+        color: "#3b82f6",
+        logo: "https://assets.coingecko.com/coins/images/4128/large/solana.png",
+        name: "Matrixdock STBT",
+        symbol: "STBT",
+      },
+    ],
+    assetsSymbol: "STBT",
+    assetsProportions: [100],
+    strategyInfo: {
+      id: "Stable Token Bonds",
+      shortId: "STB",
+      color: "#ffffff",
+      bgColor: "#3b82f6",
+      protocols: [
+        {
+          name: "Matrixdock",
+          logoSrc: "https://assets.coingecko.com/coins/images/10775/large/COMP.png",
+        },
+      ],
+      baseStrategies: [],
+      ammAdapter: "",
+      sourceCode: "",
+    },
+    il: 0,
+    underlying: {
+      address: "0x1234567890123456789012345678901234567897" as const,
+      symbol: "STBT",
+      decimals: 18,
+      logo: "https://assets.coingecko.com/coins/images/4128/large/solana.png",
+    },
+    strategyAddress: "0x1234567890123456789012345678901234567897" as const,
+    strategyDescription: "Matrixdock Stable Token Bonds",
+    status: "Active",
+    version: "1.0.0",
+    strategyVersion: "1.0.0",
+    NFTtokenID: "",
+    gasReserve: "0",
+    rebalances: { daily: 0, weekly: 0 },
+    earningData: {
+      apr: { latest: "3.79", daily: "3.79", weekly: "3.79" },
+      apy: { latest: "3.86", daily: "3.86", weekly: "3.86" },
+      poolSwapFeesAPR: { latest: "0", daily: "0", weekly: "0" },
+      farmAPR: { latest: "3.79", daily: "3.79", weekly: "3.79" },
+      gemsAPR: { latest: "0", daily: "0", weekly: "0" },
+    },
+    sortAPR: "3.79",
+    pool: {},
+    alm: { protocol: "", amountToken0: 0, amountToken1: 0, tvl: 0, positions: [] },
+    risk: { factors: [], isRektStrategy: false, symbol: "" },
+    vsHold24H: 0,
+    vsHoldWeekly: 0,
+    lifetimeVsHold: 0,
+    vsHoldAPR: 0,
+    assetsVsHold: [],
+    isVsActive: false,
+    yearnProtocols: [],
+    network: "146",
+    sonicActivePoints: 1,
+    ringsPoints: undefined,
+    liveAPR: undefined,
+    assetAPR: undefined,
+  },
+  {
+    address: "0x1234567890123456789012345678901234567898" as const,
+    name: "AsteroidX",
+    symbol: "ASTX",
+    created: "1640995200",
+    assetsPricesOnCreation: ["1.0"],
+    type: "DeFi",
+    strategy: "DEX",
+    shareprice: "1.0",
+    sharePriceLast: "1.0",
+    tvl: "0",
+    strategySpecific: "",
+    balance: "0", // No balance for this one
+    balanceInUSD: 0,
+    lastHardWork: "1640995200",
+    hardWorkOnDeposit: false,
+    daily: 0,
+    assets: [
+      {
+        address: "0x1234567890123456789012345678901234567898" as const,
+        color: "#ef4444",
+        logo: "https://assets.coingecko.com/coins/images/5/large/dogecoin.png",
+        name: "AsteroidX",
+        symbol: "ASTX",
+      },
+    ],
+    assetsSymbol: "ASTX",
+    assetsProportions: [100],
+    strategyInfo: {
+      id: "Decentralized Exchange",
+      shortId: "DEX",
+      color: "#ffffff",
+      bgColor: "#ef4444",
+      protocols: [
+        {
+          name: "AsteroidX",
+          logoSrc: "https://assets.coingecko.com/coins/images/12271/large/512x512_Logo_no_chop.png",
+        },
+      ],
+      baseStrategies: [],
+      ammAdapter: "",
+      sourceCode: "",
+    },
+    il: 0,
+    underlying: {
+      address: "0x1234567890123456789012345678901234567898" as const,
+      symbol: "ASTX",
+      decimals: 18,
+      logo: "https://assets.coingecko.com/coins/images/5/large/dogecoin.png",
+    },
+    strategyAddress: "0x1234567890123456789012345678901234567898" as const,
+    strategyDescription: "AsteroidX Decentralized Exchange Protocol",
+    status: "Active",
+    version: "1.0.0",
+    strategyVersion: "1.0.0",
+    NFTtokenID: "",
+    gasReserve: "0",
+    rebalances: { daily: 0, weekly: 0 },
+    earningData: {
+      apr: { latest: "0", daily: "0", weekly: "0" },
+      apy: { latest: "0", daily: "0", weekly: "0" },
+      poolSwapFeesAPR: { latest: "0", daily: "0", weekly: "0" },
+      farmAPR: { latest: "0", daily: "0", weekly: "0" },
+      gemsAPR: { latest: "0", daily: "0", weekly: "0" },
+    },
+    sortAPR: "0",
+    pool: {},
+    alm: { protocol: "", amountToken0: 0, amountToken1: 0, tvl: 0, positions: [] },
+    risk: { factors: [], isRektStrategy: false, symbol: "" },
+    vsHold24H: 0,
+    vsHoldWeekly: 0,
+    lifetimeVsHold: 0,
+    vsHoldAPR: 0,
+    assetsVsHold: [],
+    isVsActive: false,
+    yearnProtocols: [],
+    network: "146",
+    sonicActivePoints: 1,
+    ringsPoints: undefined,
+    liveAPR: undefined,
+    assetAPR: undefined,
+  },
+];
 
 const SonicVaults = (): JSX.Element => {
   const { open } = useWeb3Modal();
 
-  const $vaults = useStore(vaults);
-
-  const $isVaultsLoaded = useStore(isVaultsLoaded);
   const $aprFilter: TAPRPeriod = useStore(aprFilter);
   const $connected = useStore(connected);
 
   const $error = useStore(error);
   const $visible = useStore(visible);
-  // const $currentChainID = useStore(currentChainID);
-  // const $assetsPrices = useStore(assetsPrices);
-
-  // const [tokens, setTokens] = useState<TToken[]>([]);
 
   const newUrl = new URL(window.location.href);
   const params = new URLSearchParams(newUrl.search);
@@ -130,15 +779,14 @@ const SonicVaults = (): JSX.Element => {
 
   const [tableStates, setTableStates] = useState(urlTableStates);
   const [tableFilters, setTableFilters] = useState(TABLE_FILTERS);
-  const [activeNetworks, setActiveNetworks] = useState([
-    // {
-    //   name: chains["146"].name,
-    //   id: "146",
-    //   logoURI: `https://raw.githubusercontent.com/stabilitydao/.github/main/chains/${chains["146"].img}`,
-    //   explorer: "https://sonicscan.org/address/",
-    //   nativeCurrency: "S",
-    //   active: true, // main page active networks
-    // },
+  const [activeNetworks, setActiveNetworks] = useState<TChain[]>([
+    {
+      name: "Sonic",
+      id: "146",
+      logoURI: "/sonic.png",
+      explorer: "https://sonicscan.org/address/",
+      active: true,
+    },
   ]);
 
   const lastTabIndex = currentTab * PAGINATION_VAULTS;
@@ -271,40 +919,21 @@ const SonicVaults = (): JSX.Element => {
     table: TTableColumn[] = tableStates,
     tableParams = activeTableParams
   ) => {
-    if (!$vaults) return;
-
+    // Use mock data instead of real vaults
     const searchValue: string = String(search?.current?.value.toLowerCase());
 
     //@ts-ignore
     updateHistorySearch(searchValue);
 
-    let activeNetworksVaults: { [key: string]: TVault[] } = {};
+    // Use mock vaults instead of real vaults data
+    let sortedVaults = MOCK_VAULTS.map((vault) => {
+      const balance = formatFromBigInt(vault.balance, 18);
 
-    activeNetworks.forEach((network) => {
-      if (network.active) {
-        activeNetworksVaults[network.id] = $vaults[network.id];
-      }
+      return {
+        ...vault,
+        balanceInUSD: balance * Number(vault.shareprice),
+      };
     });
-
-    const mixedVaults: TVaults = Object.values(
-      activeNetworksVaults
-    ).reduce<TVaults>((acc, value) => {
-      if (typeof value === "object" && !Array.isArray(value)) {
-        return { ...acc, ...(value as TVaults) };
-      }
-      return acc;
-    }, {});
-
-    let sortedVaults = Object.values(mixedVaults)
-      .sort((a: TVault, b: TVault) => Number(b.tvl) - Number(a.tvl))
-      .map((vault) => {
-        const balance = formatFromBigInt(vault.balance, 18);
-
-        return {
-          ...vault,
-          balanceInUSD: balance * Number(vault.shareprice),
-        };
-      });
 
     //filter
     tableFilters.forEach((f) => {
@@ -442,38 +1071,31 @@ const SonicVaults = (): JSX.Element => {
 
     setActiveTableParams(_activeTableParams);
     setFilteredVaults(sortedVaults);
-    console.log(table, 'table');
-    console.log(historyData, 'table');
     setTableStates(table);
     setSearchHistory(historyData);
   };
 
   const initVaults = async () => {
-    if ($vaults) {
-      const vaults: TVault[] = Object.values($vaults[146])
-        .sort((a, b) => Number((b as TVault).tvl) - Number((a as TVault).tvl))
-        .map((vault) => {
-          const tVault = vault as TVault;
-          const balance = formatFromBigInt(tVault.balance, 18);
+    // Use mock data instead of real vault data
+    const vaults: TVault[] = MOCK_VAULTS.map((vault) => {
+      const balance = formatFromBigInt(vault.balance, 18);
 
-          return {
-            ...tVault,
-            balanceInUSD: balance * Number(tVault.shareprice),
-          };
-        });
+      return {
+        ...vault,
+        balanceInUSD: balance * Number(vault.shareprice),
+      };
+    });
 
-      initFilters(
-        vaults,
-        tableFilters,
-        setTableFilters,
-        activeNetworksHandler,
-        setActiveTableParams
-      );
-      setLocalVaults(vaults);
-
-      setFilteredVaults(vaults);
-      setIsLocalVaultsLoaded(true);
-    }
+    initFilters(
+      vaults,
+      tableFilters,
+      setTableFilters,
+      activeNetworksHandler,
+      setActiveTableParams
+    );
+    setLocalVaults(vaults);
+    setFilteredVaults(vaults);
+    setIsLocalVaultsLoaded(true);
   };
 
   useEffect(() => {
@@ -481,8 +1103,9 @@ const SonicVaults = (): JSX.Element => {
   }, [tableFilters, activeNetworks]);
 
   useEffect(() => {
+    // Initialize with mock data instead of waiting for real data
     initVaults();
-  }, [$vaults, $isVaultsLoaded]);
+  }, []);
 
   useEffect(() => {
     const _allParams = Object.values(activeTableParams).reduce(
@@ -496,8 +1119,9 @@ const SonicVaults = (): JSX.Element => {
   }, [activeTableParams]);
 
   const isLoading = useMemo(() => {
-    return !$isVaultsLoaded || !isLocalVaultsLoaded;
-  }, [$isVaultsLoaded, isLocalVaultsLoaded]);
+    // Always show as loaded since we're using mock data
+    return !isLocalVaultsLoaded;
+  }, [isLocalVaultsLoaded]);
 
   return (
     <>
@@ -791,10 +1415,26 @@ const SonicVaults = (): JSX.Element => {
                             }`}
                           >
                             <div className="flex flex-col justify-end">
-                              <p>{formatNumber(aprValue, "formatAPR")}%</p>
+                              <p>
+                                <CountUp 
+                                  end={aprValue} 
+                                  decimals={2}
+                                  duration={1.2}
+                                  suffix="%"
+                                  enableScrollSpy={true}
+                                  scrollSpyDelay={100}
+                                />
+                              </p>
                               {!!vault?.liveAPR && (
                                 <p className="text-[12px] text-neutral-700">
-                                  live. {vault?.liveAPR?.toFixed(2)}%
+                                  live. <CountUp 
+                                    end={vault.liveAPR} 
+                                    decimals={2}
+                                    duration={1.2}
+                                    suffix="%"
+                                    enableScrollSpy={true}
+                                    scrollSpyDelay={150}
+                                  />
                                 </p>
                               )}
                             </div>
@@ -882,13 +1522,59 @@ const SonicVaults = (): JSX.Element => {
                           </div>
                         </td>
                         <td className="px-2 min-[1130px]:px-4 py-2 text-right">
-                          {formatNumber(vault.tvl, "abbreviate")}
+                          {Number(vault.tvl) > 1000000 ? (
+                            <>
+                              $<CountUp 
+                                end={Number(vault.tvl) / 1000000} 
+                                decimals={2}
+                                duration={1.2}
+                                enableScrollSpy={true}
+                                scrollSpyDelay={250}
+                                separator=","
+                                suffix="M"
+                              />
+                            </>
+                          ) : Number(vault.tvl) > 1000 ? (
+                            <>
+                              $<CountUp 
+                                end={Number(vault.tvl) / 1000} 
+                                decimals={1}
+                                duration={1.2}
+                                enableScrollSpy={true}
+                                scrollSpyDelay={250}
+                                separator=","
+                                suffix="K"
+                              />
+                            </>
+                          ) : (
+                            <>
+                              $<CountUp 
+                                end={Number(vault.tvl)} 
+                                decimals={0}
+                                duration={1.2}
+                                enableScrollSpy={true}
+                                scrollSpyDelay={250}
+                                separator=","
+                              />
+                            </>
+                          )}
                         </td>
                         <td className="pr-2 md:pr-3 min-[1130px]:pr-5 py-2 text-right">
                           <p className={`${!$visible && "blur select-none"}`}>
-                            {$visible
-                              ? `$${formatNumber(vault.balanceInUSD, "format")}`
-                              : "$000"}
+                            {$visible ? (
+                              <>
+                                $<CountUp 
+                                  end={vault.balanceInUSD} 
+                                  decimals={2}
+                                  duration={1.2}
+                                  enableScrollSpy={true}
+                                  scrollSpyDelay={300}
+                                  separator=","
+                                />
+                              </>
+                            ) : (
+                              "$000"
+                            )}
                           </p>
                         </td>
                       </tr>

@@ -21,7 +21,7 @@ import { Breadcrumbs, HeadingText } from "@ui";
 
 import { ChainStatus, StrategyStatus, ProtocolsChip } from "../../ui";
 
-import tokenlist from "@stabilitydao/stability/out/stability.tokenlist.json";
+import { tokenlist } from "@constants"; "@stabilitydao/stability/out/stability.tokenlist.json";
 
 import type { TStrategyState, TVault } from "@types";
 

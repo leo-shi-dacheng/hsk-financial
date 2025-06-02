@@ -1,7 +1,21 @@
 .home-bg {
   background: linear-gradient(132deg, #000 37.8%, rgba(0, 0, 0, 0.55) 80.55%),
     #612ffb;
+  position: relative;
+  overflow: hidden;
 }
+
+/* 确保内容在浮动代币之上 */
+.home-bg > .flex {
+  position: relative;
+  z-index: 2;
+}
+
+/* 优化背景性能 */
+.home-bg {
+  will-change: transform;
+}
+
 .responsive-font__h1 {
   font-size: calc(45px + 27 * ((100vw - 360px) / (1920 - 320)));
 }

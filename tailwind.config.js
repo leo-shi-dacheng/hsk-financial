@@ -102,6 +102,18 @@ export default {
       fontFamily: {
         manrope: ["Manrope", "sans-serif"],
       },
+      // 添加自定义动画
+      animation: {
+        'marquee': 'marquee 45s linear infinite',
+        'marquee-slow': 'marquee 60s linear infinite', // 新增更慢的动画
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        marquee: {
+          '0%': { transform: 'translateX(0%)' },
+          '100%': { transform: 'translateX(-100%)' },
+        }
+      },
     },
   },
   plugins: [],
